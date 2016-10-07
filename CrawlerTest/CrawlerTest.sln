@@ -5,7 +5,7 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrawlerTest", "CrawlerTest.csproj", "{10748B37-CCA3-42CB-90A0-06908E61B177}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crawler", "Crawler\Crawler.csproj", "{FD54495F-F202-4B44-B512-0F1646B9E862}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crawler", "..\Crawler\Crawler.csproj", "{FD54495F-F202-4B44-B512-0F1646B9E862}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

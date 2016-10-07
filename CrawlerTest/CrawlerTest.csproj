@@ -104,10 +104,12 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="Crawler\Crawler.csproj">
-      <Project>{FD54495F-F202-4B44-B512-0F1646B9E862}</Project>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Crawler\Crawler.csproj">
+      <Project>{fd54495f-f202-4b44-b512-0f1646b9e862}</Project>
       <Name>Crawler</Name>
     </ProjectReference>
   </ItemGroup>
