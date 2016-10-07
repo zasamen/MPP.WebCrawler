@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace Crawler.Parsers
 {
+    /// <summary>
+    /// This class only for testing in the offline mode
+    /// </summary>
     public class TestParser : IWebParser
     {
         public AggregateException ParserRuntimeExceptions => null;
