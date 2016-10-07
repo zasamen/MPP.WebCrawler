@@ -7,6 +7,8 @@ namespace Crawler.Parsers
 {
     public class TestParser : IWebParser
     {
+        public AggregateException ParserRuntimeExceptions => null;
+
         public async Task<IEnumerable<string>> ParsePageForUrlAsync(string parentUrl, string currentUrl)
         {
             return await Task.Run(()=> new List<string>()

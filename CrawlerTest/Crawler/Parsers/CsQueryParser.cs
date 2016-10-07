@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using CsQuery;
@@ -7,9 +8,12 @@ namespace Crawler.Parsers
 {
     public class CsQueryParser : IWebParser
     {
+        private readonly ConcurrentBag<Exception> parserExceptions = new ConcurrentBag<Exception>();
+
+        public AggregateException ParserRuntimeExceptions => new AggregateException(parserExceptions);
+
         public Task<IEnumerable<string>> ParsePageForUrlAsync(string parentUrl, string currentUrl)
         {
-            /**todo exception aggregation*/
             return Task.Run(() =>
             {
                 IEnumerable<string> urls = new List<string>();
@@ -20,12 +24,13 @@ namespace Crawler.Parsers
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
+                    parserExceptions.Add(ex);
                 }
 
                 return urls;
             });
         }
+
 
         private IEnumerable<string> GetAllLinks(string url)
         {
