@@ -56,7 +56,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Commands\Command.cs" />
+    <Compile Include="Commands\AsyncCommand.cs" />
+    <Compile Include="Commands\IAsyncCommand.cs" />
+    <Compile Include="Config\Exceptions\ConfigLoadingException.cs" />
     <Compile Include="Config\XmlConfigReader.cs" />
     <Compile Include="Config\IConfigReader.cs" />
     <Compile Include="Converters\CrawlResultConverter.cs" />

@@ -10,32 +10,27 @@ namespace CrawlerTest.ViewModel
 {
     internal class CrawlerViewModel : ViewModelBase
     {
-        private readonly Command command;
+        private readonly AsyncCommand command;
         private CrawlResult crawlResult;
         private readonly CrawlerModel crawlerModel;
 
         public CrawlerViewModel()
         {
             crawlerModel = new CrawlerModel();
-            command = new Command(
-                () =>
+            command = new AsyncCommand(
+                async () =>
                 {
                     if (command.CanExecute)
                     {
                         DisableCommand();
-                        var dispatcher = Dispatcher.CurrentDispatcher;
-                        Task.Run(() =>
-                        {
-                            CrawlResult = crawlerModel.GetCrawlerResult().Result;
-                            dispatcher.Invoke(EnableCommand);
-                        });
-
+                        CrawlResult = await crawlerModel.GetCrawlerResult();
+                        EnableCommand();
                     }
 
                 });
             
         }
-        public Command Comand => command;
+
         public CrawlResult CrawlResult
         {
             get
@@ -51,6 +46,9 @@ namespace CrawlerTest.ViewModel
                 }
             }
         }
+
+        public AsyncCommand Comand => command;
+
         private void DisableCommand()
         {
             command.CanExecute = false;

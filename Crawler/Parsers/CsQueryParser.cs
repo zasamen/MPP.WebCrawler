@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using CsQuery;
 
@@ -12,30 +14,39 @@ namespace Crawler.Parsers
 
         public AggregateException ParserRuntimeExceptions => new AggregateException(parserExceptions);
 
-        public Task<IEnumerable<string>> ParsePageForUrlAsync(string parentUrl, string currentUrl)
+        public async Task<IEnumerable<string>> ParsePageForUrlAsync(string parentUrl, string currentUrl)
         {
-            return Task.Run(() =>
-            {
-                IEnumerable<string> urls = new List<string>();
-                currentUrl = CombineUrlsIfNeed(parentUrl, currentUrl);
-                try
-                {
-                     urls = GetAllLinks(currentUrl);
-                }
-                catch (Exception ex)
-                {
-                    parserExceptions.Add(ex);
-                }
 
-                return urls;
-            });
+            IEnumerable<string> urls = new List<string>();
+            currentUrl = CombineUrlsIfNeed(parentUrl, currentUrl);
+            try
+            {
+                string page = await LoadPage(currentUrl);
+                urls = GetAllLinksFromPage(page);
+            }
+            catch (Exception ex)
+            {
+                parserExceptions.Add(ex);
+            }
+
+            return urls;
+        }
+
+        private async Task<string> LoadPage(string currentUrl)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                string response = await httpClient.GetStringAsync(currentUrl);
+                return response;
+            }
         }
 
 
-        private IEnumerable<string> GetAllLinks(string url)
+        private IEnumerable<string> GetAllLinksFromPage(string page)
         {
             List<string> hrefsList = new List<string>();
-            CQ csQuery = CQ.CreateFromUrl(url);
+            CQ csQuery = CQ.CreateDocument(page);
+            
             foreach (IDomObject link in csQuery.Find("a"))
             {
                 string href = link.GetAttribute("href");

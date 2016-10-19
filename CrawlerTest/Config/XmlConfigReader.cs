@@ -2,14 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
+using CrawlerTest.Config.Exceptions;
 
 namespace CrawlerTest.Config
 {
     internal class XmlConfigReader : IConfigReader
     {
         private readonly string filename;
-        private IEnumerable<string> urlList = null;
-        private int? searchDepth = null;
+        private IEnumerable<string> urlList;
+        private int searchDepth;
+        private bool isLoaded;
 
         internal XmlConfigReader(string filename)
         {
@@ -18,39 +20,45 @@ namespace CrawlerTest.Config
                 throw new ArgumentException("Invalid path", nameof(filename));
             }
             this.filename = filename;
+            isLoaded = false;
+            urlList = new List<string>();
+            searchDepth = 0;
         }
 
         public IEnumerable<string> GetRootUrls()
         {
-            if (urlList == null)
-            {
-                LoadConfigFromFile();
-            }
-
+            LoadConfigFromFile();
             IEnumerable<string> newUrlList = urlList.ToList(); //make a copy
             return newUrlList;
         }
 
         public CrawlerConfigData GetCrawlerConfig()
         {
-            if (searchDepth == null)
-            {
-                LoadConfigFromFile();
-            }             
-            return new CrawlerConfigData(searchDepth.Value);
+            LoadConfigFromFile();
+            return new CrawlerConfigData(searchDepth);
         }
-        
+
         private void LoadConfigFromFile()
         {
-            XDocument xDoc = XDocument.Load(filename);
-            XElement rootElem = xDoc.Root;
+            if(isLoaded) return;
 
-            searchDepth = int.Parse(rootElem.Element("depth").Value);
-            urlList = (from resource in rootElem.Element("rootResources").Elements("resource")
-                where !string.IsNullOrWhiteSpace(resource.Value)
-                select resource.Value).
-                ToList();
+            try
+            {
+                XDocument xDoc = XDocument.Load(filename);
+                XElement rootElem = xDoc.Root;
 
+                searchDepth = int.Parse(rootElem.Element("depth").Value);
+                urlList = (from resource in rootElem.Element("rootResources").Elements("resource")
+                        where !string.IsNullOrWhiteSpace(resource.Value)
+                        select resource.Value).
+                    ToList();
+
+                isLoaded = true;
+            }
+            catch (Exception ex)
+            {
+                throw new ConfigLoadingException(ex);
+            }
         }
     }
 }

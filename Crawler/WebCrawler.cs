@@ -1,18 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Crawler.Config;
 using Crawler.Parsers;
+using NLog;
 
 namespace Crawler
 {
     public sealed class WebCrawler : ISimpleWebCrawler
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         private const int MaxSearchDepth = 6;
 
         private readonly IWebParser parser;
         private readonly ICrawlerConfig config;
         
-
         public WebCrawler() : this(new CsQueryParser(), new DefaultCrawlerConfig())
         {
         }
@@ -27,7 +30,9 @@ namespace Crawler
         
         public async Task<CrawlResult> PerformCrawlingAsync(IEnumerable<string> rootUrls)
         {
-            return await CrawlUrlsAsync(string.Empty, rootUrls, 1);
+            CrawlResult result = await CrawlUrlsAsync(string.Empty, rootUrls, 1);
+            LogException(parser.ParserRuntimeExceptions);
+            return result;
         }
 
         private ICrawlerConfig CheckSearchDepthRestriction(ICrawlerConfig currentConfig)
@@ -56,6 +61,11 @@ namespace Crawler
             }
 
             return new CrawlResult() { UrlDictionary = crawlResult };
+        }
+
+        private void LogException(Exception exception)
+        {
+            Logger.Warn(exception);
         }
     }
 }
