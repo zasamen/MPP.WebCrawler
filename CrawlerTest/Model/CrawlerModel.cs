@@ -14,7 +14,7 @@ namespace CrawlerTest.Model
         internal CrawlerModel()
         {
             configReader = new XmlConfigReader(configFilename);
-            crawler = new WebCrawler(new CsQueryParser(), configReader.GetCrawlerConfig());
+            crawler = new WebCrawler(new TestParser(), configReader.GetCrawlerConfig());
         }
 
         internal Task<CrawlResult> GetCrawlerResult()

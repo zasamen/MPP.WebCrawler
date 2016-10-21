@@ -14,7 +14,7 @@ namespace Crawler.Parsers
 
         public async Task<IEnumerable<string>> ParsePageForUrlAsync(string parentUrl, string currentUrl)
         {
-            return await Task.Run(()=> new List<string>()
+            return await Task.FromResult(new List<string>()
             {
                 "test1" + new Random().Next(),
                 "test2",

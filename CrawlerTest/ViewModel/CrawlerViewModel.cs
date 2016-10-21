@@ -42,7 +42,7 @@ namespace CrawlerTest.ViewModel
                 if (crawlResult != value)
                 {
                     crawlResult = value;
-                    OnPropertyChanged("CrawlResult");
+                    OnPropertyChanged(nameof(CrawlResult));
                 }
             }
         }
