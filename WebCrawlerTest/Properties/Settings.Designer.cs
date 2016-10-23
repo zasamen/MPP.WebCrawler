@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WebCrawlerProject.Properties
+namespace WebCrawlerTest.Properties
 {
 
 

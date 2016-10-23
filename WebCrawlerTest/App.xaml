@@ -1,8 +1,8 @@
-﻿<Application x:Class="webCrawlerProject.App"
+﻿<Application x:Class="WebCrawlerTest.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:webCrawlerProject"
-             StartupUri="MainWindow.xaml">
+             xmlns:local="clr-namespace:WebCrawlerTest"
+             StartupUri="View/MainWindow.xaml">
     <Application.Resources>
          
     </Application.Resources>
