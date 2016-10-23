@@ -2,6 +2,6 @@
 {
     public interface ISimpleWebCrawler
     {
-        CrawlResult PerformCrawlingAsync(string[] rootUrls);
+        CrawlResult PerformCrawlingAsync(int depth, string[] rootUrls);
     }
 }

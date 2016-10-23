@@ -2,7 +2,6 @@
 <root>
 	<depth>3</depth>
 	<rootResources>
-		<resource>http://www.codeproject.com/Articles/9949/Hierarchical-TreeView-control-with-data-binding-en</resource>
-    <resource>http://stackoverflow.com/questions/8497673/html-agility-pack-parsing-an-href-tag</resource>
+		<resource>http://stackoverflow.com/questions/670563/linq-to-read-xml</resource>
 	</rootResources>
 </root>

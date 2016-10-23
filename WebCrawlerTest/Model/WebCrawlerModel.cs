@@ -20,7 +20,7 @@ namespace WebCrawlerTest.Model
 
         public CrawlResult GetWebCrawlingResult()
         {
-            CrawlResult result = webCrawler.PerformCrawlingAsync(ConfigData.RootResources);
+            CrawlResult result = webCrawler.PerformCrawlingAsync(ConfigData.Depth, ConfigData.RootResources);
             return result;
         }
 
