@@ -1,24 +1,32 @@
-﻿using WebCrawlerLib.WebCrawler;
+﻿using System;
+using WebCrawlerLib.WebCrawler;
+using WebCrawlerTest.AppConfig;
 
 namespace WebCrawlerTest.Model
 {
-    internal class WebCrawlerModel
+    internal class WebCrawlerModel : IConfigurable
     {
+        private const string AppConfigFilePath = "..\\..\\AppConfig\\config.xml";
+
         private ISimpleWebCrawler webCrawler;
+        public ConfigData ConfigData{ get; set;}
 
         public WebCrawlerModel()
         {
             webCrawler = new WebCrawler();
+            IConfigReader configReader = new XmlConfigReader();
+            ConfigData = LoadApplicationConfig(configReader);
         }
 
         public CrawlResult GetWebCrawlingResult()
         {
-            string[] urls = new string[2];
-            urls[0] = "http://www.codeproject.com/Articles/9949/Hierarchical-TreeView-control-with-data-binding-en";
-            urls[1] = "http://stackoverflow.com/questions/8497673/html-agility-pack-parsing-an-href-tag";
-            CrawlResult result = webCrawler.PerformCrawlingAsync(urls);
-
+            CrawlResult result = webCrawler.PerformCrawlingAsync(ConfigData.RootResources);
             return result;
+        }
+
+        public ConfigData LoadApplicationConfig(IConfigReader configReader)
+        {
+            return configReader.ReadApplicationConfig(AppConfigFilePath);
         }
     }
 }

@@ -67,6 +67,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="AppConfig\ConfigData.cs" />
+    <Compile Include="AppConfig\IConfigReader.cs" />
+    <Compile Include="AppConfig\IConfigurable.cs" />
+    <Compile Include="AppConfig\XmlConfigReader.cs" />
     <Compile Include="Model\WebCrawlerModel.cs" />
     <Compile Include="ViewModel\BindableBase.cs" />
     <Compile Include="ViewModel\Commands\StartCrawlingCommand.cs" />
@@ -105,7 +109,9 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="AppConfig\config.xml" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\WebCrawlerLib\WebCrawlerLib.csproj">
       <Project>{1B78C4DF-11A1-48AF-A3CD-3FDD1334D236}</Project>

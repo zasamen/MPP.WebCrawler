@@ -7,6 +7,7 @@ namespace WebCrawlerTest.ViewModel
     {
         private WebCrawlerModel webCrawlerModel;
         public StartCrawlingCommand StartCrawling { get; set; }
+
         private CrawlResult webCrawlResult;
         public CrawlResult WebCrawlResult
         {
