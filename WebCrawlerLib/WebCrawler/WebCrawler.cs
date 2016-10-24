@@ -1,11 +1,17 @@
 ﻿using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace WebCrawlerLib.WebCrawler
 {
     public class WebCrawler : ISimpleWebCrawler
     {
+
+        private const string SearchTag = "a";
+        private const string SearchAttribute = "href";
+
+        private HtmlWeb webClient;
         private int maxCrawlingDepth;
         private int MaxCrawlingDepth
         {
@@ -22,38 +28,46 @@ namespace WebCrawlerLib.WebCrawler
             }
         }
 
-        public CrawlResult PerformCrawlingAsync(int depth, string[] rootUrls)
+        public WebCrawler()
+        {
+            webClient = new HtmlWeb();
+        }
+
+        public async Task<CrawlResult> PerformCrawlingAsync(int depth, string[] rootUrls)
         {
             MaxCrawlingDepth = depth;
             CrawlResult rootTree = new CrawlResult();
 
             foreach (string rootUrl in rootUrls)
             {
-                CrawlResult crawlUrl = CreateUrlTree(rootUrl, 1);
+                CrawlResult crawlUrl = await CreateUrlTree(rootUrl, 1);
                 rootTree.AddNestedUrl(crawlUrl);
-
             }
-
+            
             return rootTree;
         }
 
 
-        private CrawlResult CreateUrlTree(string rootUrl, int currentDepth)
+        private async Task<CrawlResult> CreateUrlTree(string rootUrl, int currentDepth)
         {
             CrawlResult crawlResult = new CrawlResult(rootUrl);
             if(currentDepth < maxCrawlingDepth)
             {
                 HtmlNode htmlPage = LoadHtml(rootUrl);
+                if(htmlPage == null)
+                {
+                    return crawlResult;
+                }
+
                 List<String> urls = FindUrls(htmlPage);
 
                 foreach (string url in urls)
                 {
-                    CrawlResult innerUrl = CreateUrlTree(url, currentDepth+1);
+                    CrawlResult innerUrl = await CreateUrlTree(url, currentDepth+1);
                     crawlResult.AddNestedUrl(innerUrl);
                 }
             }
             
-
             return crawlResult;
         }
 
@@ -62,8 +76,7 @@ namespace WebCrawlerLib.WebCrawler
 
             try
             {
-                HtmlWeb web = new HtmlWeb();
-                HtmlDocument document = web.Load(url);
+                HtmlDocument document = webClient.Load(url);
                 return document.DocumentNode;
             }
             catch (Exception e)
@@ -73,28 +86,22 @@ namespace WebCrawlerLib.WebCrawler
 
         }
 
-        private bool UrlIsValid(string url)
-        {
-            Uri uriResult;
-            return Uri.TryCreate(url, UriKind.Absolute, out uriResult) && uriResult.Scheme == Uri.UriSchemeHttp;
-        }
 
         private List<string> FindUrls(HtmlNode page)
         {
             List<string> hrefTags = new List<string>();
 
-            foreach (HtmlNode link in page.Descendants("a"))
+            foreach (HtmlNode link in page.Descendants(SearchTag))
             {
-                if (link.Attributes.Contains("href"))
+                if (link.Attributes.Contains(SearchAttribute))
                 {
-                    HtmlAttribute hrefAttribute = link.Attributes["href"];
-                    if (hrefAttribute.Value.StartsWith("http"))
+                    string attribute = link.Attributes[SearchAttribute].Value;
+                    if (attribute.StartsWith("http"))
                     {
-                        hrefTags.Add(hrefAttribute.Value);
+                        hrefTags.Add(attribute);
                     }
                     
                 }
-
             }
 
             return hrefTags;

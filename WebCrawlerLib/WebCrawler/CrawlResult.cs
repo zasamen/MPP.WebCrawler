@@ -23,10 +23,8 @@ namespace WebCrawlerLib.WebCrawler
 
         public void AddNestedUrl(CrawlResult url)
         {
-            if (url != null)
-            {
+
                 NestedUrls.Add(url);
-            }
         }
 
         public IEnumerator<CrawlResult> GetEnumerator()

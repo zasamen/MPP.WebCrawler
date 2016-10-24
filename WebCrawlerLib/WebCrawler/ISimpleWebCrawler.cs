@@ -1,7 +1,9 @@
-﻿namespace WebCrawlerLib.WebCrawler
+﻿using System.Threading.Tasks;
+
+namespace WebCrawlerLib.WebCrawler
 {
     public interface ISimpleWebCrawler
     {
-        CrawlResult PerformCrawlingAsync(int depth, string[] rootUrls);
+        Task<CrawlResult> PerformCrawlingAsync(int depth, string[] rootUrls);
     }
 }

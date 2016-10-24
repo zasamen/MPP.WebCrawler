@@ -8,13 +8,13 @@ namespace WebCrawlerTest.ViewModel
 
         protected void OnPropertyChanged(string propertyName)
         {
-            if (HasListeners())
+            if (HasObservers())
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
 
-        private bool HasListeners()
+        private bool HasObservers()
         {
             return (PropertyChanged != null);
         }

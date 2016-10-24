@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using WebCrawlerLib.WebCrawler;
 using WebCrawlerTest.AppConfig;
 
@@ -18,10 +19,9 @@ namespace WebCrawlerTest.Model
             ConfigData = LoadApplicationConfig(configReader);
         }
 
-        public CrawlResult GetWebCrawlingResult()
+        public Task<CrawlResult> GetWebCrawlingResultAsync()
         {
-            CrawlResult result = webCrawler.PerformCrawlingAsync(ConfigData.Depth, ConfigData.RootResources);
-            return result;
+            return webCrawler.PerformCrawlingAsync(ConfigData.Depth, ConfigData.RootResources);
         }
 
         public ConfigData LoadApplicationConfig(IConfigReader configReader)

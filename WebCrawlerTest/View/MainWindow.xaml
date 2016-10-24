@@ -19,7 +19,7 @@
         <TreeView x:Name="UrlTreeView" HorizontalAlignment="Left" Height="310" VerticalAlignment="Top" Width="610" Margin="0,0,0,0"
                   ItemsSource="{Binding WebCrawlResult, Converter={StaticResource converter}, Source={StaticResource ViewModel}}"/>
         
-        <Button x:Name="button" Content="Do it"  HorizontalAlignment="Left" Margin="535,357,0,0" VerticalAlignment="Top" Width="75" Command="{Binding StartCrawling, Source={StaticResource ViewModel}}"/>
+        <Button x:Name="button" Content="Do it"  HorizontalAlignment="Left" Margin="535,357,0,0" VerticalAlignment="Top" Width="75" Command="{Binding CrawlingCommand, Source={StaticResource ViewModel}}"/>
         <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="10,357,0,0" TextWrapping="Wrap" Text="Useless textbox" VerticalAlignment="Top" Width="369"/>
     </Grid>
 </Window>

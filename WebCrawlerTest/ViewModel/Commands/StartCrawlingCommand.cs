@@ -1,30 +1,54 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace WebCrawlerTest.ViewModel
 {
     internal class StartCrawlingCommand : ICommand
     {
-        private Action TargetExecuteMethod;
-
+        private Func<Task> targetExecuteMethod;
         public event EventHandler CanExecuteChanged;
+        private bool enabled;
 
-        public StartCrawlingCommand(Action executeMethod)
+
+        public StartCrawlingCommand(Func<Task> executeMethod)
         {
-            TargetExecuteMethod = executeMethod;
+            targetExecuteMethod = executeMethod;
+            enabled = true;
         }
 
         public bool CanExecute(object parameter)
         {
-            return true;
+            return enabled;
         }
 
-        public void Execute(object parameter)
+        public async void Execute(object parameter)
         {
-            if(TargetExecuteMethod != null)
+            await ExecuteAsync();
+        }
+
+        private Task ExecuteAsync()
+        {
+            return targetExecuteMethod();
+        }
+
+        public void Disable()
+        {
+            enabled = false;
+        }
+
+        public void Enable()
+        {
+            enabled = true;
+        }
+
+        private void NotifyObservers()
+        {
+            if(CanExecuteChanged != null)
             {
-                TargetExecuteMethod();
+                CanExecuteChanged(this, EventArgs.Empty);
             }
         }
+        
     }
 }
