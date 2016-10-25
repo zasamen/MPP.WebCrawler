@@ -24,7 +24,7 @@ namespace WebCrawlerTest.ViewModel
 
         public async void Execute(object parameter)
         {
-            await ExecuteAsync().ConfigureAwait(false);
+            await ExecuteAsync();
         }
 
         private Task ExecuteAsync()

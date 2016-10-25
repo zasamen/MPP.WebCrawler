@@ -33,32 +33,27 @@ namespace WebCrawlerLib.WebCrawler
             webClient = new HtmlWeb();
         }
 
-        public Task<CrawlResult> PerformCrawlingAsync(int depth, string[] rootUrls)
+        public async Task<CrawlResult> PerformCrawlingAsync(int depth, string[] rootUrls)
         {
-            return Task.Run(() =>
-            {
                 MaxCrawlingDepth = depth;
                 CrawlResult rootTree = new CrawlResult();
 
                 foreach (string rootUrl in rootUrls)
                 {
-                    CrawlResult crawlUrl = CreateUrlTree(rootUrl, 1);
+                    CrawlResult crawlUrl = await CreateUrlTree(rootUrl, 1);
                     rootTree.AddNestedUrl(crawlUrl);
                 }
             
                 return rootTree;
-           }
-           );
-            
         }
 
 
-        private CrawlResult CreateUrlTree(string rootUrl, int currentDepth)
+        private async Task<CrawlResult> CreateUrlTree(string rootUrl, int currentDepth)
         {
             CrawlResult crawlResult = new CrawlResult(rootUrl);
             if(currentDepth < maxCrawlingDepth)
             {
-                HtmlNode htmlPage = LoadHtml(rootUrl);
+                HtmlNode htmlPage = await LoadHtml(rootUrl);
                 if(htmlPage == null)
                 {
                     return crawlResult;
@@ -68,7 +63,7 @@ namespace WebCrawlerLib.WebCrawler
 
                 foreach (string url in urls)
                 {
-                    CrawlResult innerUrl = CreateUrlTree(url, currentDepth+1);
+                    CrawlResult innerUrl = await CreateUrlTree(url, currentDepth+1);
                     crawlResult.AddNestedUrl(innerUrl);
                 }
             }
@@ -76,13 +71,18 @@ namespace WebCrawlerLib.WebCrawler
             return crawlResult;
         }
 
-        private HtmlNode LoadHtml(string url)
+        private Task<HtmlNode> LoadHtml(string url)
         {
 
             try
             {
-                HtmlDocument document = webClient.Load(url);
-                return document.DocumentNode;
+                return Task.Run( () => 
+                    {
+                    HtmlDocument document = webClient.Load(url);
+                    return document.DocumentNode;
+                    }
+               );
+                
             }
             catch (Exception e)
             {
@@ -95,8 +95,7 @@ namespace WebCrawlerLib.WebCrawler
         private List<string> FindUrls(HtmlNode page)
         {
             List<string> hrefTags = new List<string>();
-
-            foreach (HtmlNode link in page.Descendants(SearchTag))
+            Parallel.ForEach(page.Descendants(SearchTag), (link) => 
             {
                 if (link.Attributes.Contains(SearchAttribute))
                 {
@@ -105,9 +104,9 @@ namespace WebCrawlerLib.WebCrawler
                     {
                         hrefTags.Add(attribute);
                     }
-                    
+
                 }
-            }
+            });
 
             return hrefTags;
         }

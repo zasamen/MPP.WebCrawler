@@ -1,5 +1,4 @@
-﻿
-namespace WebCrawlerTest.AppConfig
+﻿namespace WebCrawlerTest.AppConfig
 {
     internal interface IConfigReader
     {

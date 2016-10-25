@@ -31,7 +31,7 @@ namespace WebCrawlerTest.ViewModel
                     if (CrawlingCommand.CanExecute(null))
                     {
                         CrawlingCommand.Disable();
-                        WebCrawlResult = await webCrawlerModel.GetWebCrawlingResultAsync().ConfigureAwait(false);
+                        WebCrawlResult = await webCrawlerModel.GetWebCrawlingResultAsync();
                         CrawlingCommand.Enable();
                     }
                   
