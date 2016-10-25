@@ -33,22 +33,27 @@ namespace WebCrawlerLib.WebCrawler
             webClient = new HtmlWeb();
         }
 
-        public async Task<CrawlResult> PerformCrawlingAsync(int depth, string[] rootUrls)
+        public Task<CrawlResult> PerformCrawlingAsync(int depth, string[] rootUrls)
         {
-            MaxCrawlingDepth = depth;
-            CrawlResult rootTree = new CrawlResult();
-
-            foreach (string rootUrl in rootUrls)
+            return Task.Run(() =>
             {
-                CrawlResult crawlUrl = await CreateUrlTree(rootUrl, 1);
-                rootTree.AddNestedUrl(crawlUrl);
-            }
+                MaxCrawlingDepth = depth;
+                CrawlResult rootTree = new CrawlResult();
+
+                foreach (string rootUrl in rootUrls)
+                {
+                    CrawlResult crawlUrl = CreateUrlTree(rootUrl, 1);
+                    rootTree.AddNestedUrl(crawlUrl);
+                }
             
-            return rootTree;
+                return rootTree;
+           }
+           );
+            
         }
 
 
-        private async Task<CrawlResult> CreateUrlTree(string rootUrl, int currentDepth)
+        private CrawlResult CreateUrlTree(string rootUrl, int currentDepth)
         {
             CrawlResult crawlResult = new CrawlResult(rootUrl);
             if(currentDepth < maxCrawlingDepth)
@@ -63,7 +68,7 @@ namespace WebCrawlerLib.WebCrawler
 
                 foreach (string url in urls)
                 {
-                    CrawlResult innerUrl = await CreateUrlTree(url, currentDepth+1);
+                    CrawlResult innerUrl = CreateUrlTree(url, currentDepth+1);
                     crawlResult.AddNestedUrl(innerUrl);
                 }
             }

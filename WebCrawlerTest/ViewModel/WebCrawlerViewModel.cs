@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using WebCrawlerLib.WebCrawler;
+﻿using WebCrawlerLib.WebCrawler;
 using WebCrawlerTest.Model;
 
 namespace WebCrawlerTest.ViewModel
@@ -31,10 +28,10 @@ namespace WebCrawlerTest.ViewModel
             CrawlingCommand = new StartCrawlingCommand(
                 async () => 
                 {
-                    if (CrawlingCommand.CanExecute(new object()))
+                    if (CrawlingCommand.CanExecute(null))
                     {
                         CrawlingCommand.Disable();
-                        WebCrawlResult = await webCrawlerModel.GetWebCrawlingResultAsync();
+                        WebCrawlResult = await webCrawlerModel.GetWebCrawlingResultAsync().ConfigureAwait(false);
                         CrawlingCommand.Enable();
                     }
                   
