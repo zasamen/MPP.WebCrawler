@@ -8,6 +8,6 @@ namespace WebCrawler
 {
    public interface IHtmlParser
    {
-       Task<IEnumerable<string>> GetUrlsFromPageAsync(string page);
+       IEnumerable<string> GetLinksFromPage(string page);
    }
 }

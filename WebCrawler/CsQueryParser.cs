@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CsQuery;
 
 namespace WebCrawler
 {
     internal class CsQueryParser : IHtmlParser
     {
-        public Task<IEnumerable<string>> GetUrlsFromPageAsync(string page)
+        public IEnumerable<string> GetLinksFromPage(string page)
         {
-            throw new NotImplementedException();
+            CQ csQuery = CQ.CreateDocument(page);
+            return csQuery.Select("a").Select(x => x.GetAttribute("href")).Where(x => !string.IsNullOrEmpty(x));
         }
     }
 }
