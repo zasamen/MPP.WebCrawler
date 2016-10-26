@@ -1,0 +1,22 @@
+﻿<Window x:Class="CrawlerTest.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:localViewModel="clr-namespace:CrawlerTest.ViewModel"
+        xmlns:converters="clr-namespace:CrawlerTest.Converters"
+        mc:Ignorable="d"
+        Title="Crawler" Height="383.128" Width="586.934">
+    <Window.Resources>
+        <localViewModel:CrawlerViewModel x:Key="CrawlerViewModel"/>
+        <converters:CrawlResultConverter x:Key="CrawlResultConverter" />
+    </Window.Resources>
+    <Grid DataContext="{StaticResource CrawlerViewModel}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.8*" />
+            <RowDefinition Height="0.2*" />
+        </Grid.RowDefinitions>
+        <TreeView Grid.Row="0"  ItemsSource="{Binding CrawlResult, Converter={StaticResource CrawlResultConverter}}"/>
+        <Button Grid.Row="1" Content="Start Crawling"  Command="{Binding Comand}" Margin="10"/>
+    </Grid>
+</Window>
