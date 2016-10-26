@@ -60,7 +60,7 @@ namespace WebCrawlerLib.WebCrawler
                     return crawlResult;
                 }
 
-                ConcurrentBag<String> urls = FindUrls(htmlPage);
+                ConcurrentBag<string> urls = FindUrls(htmlPage);
 
                 foreach (string url in urls)
                 {

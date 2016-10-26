@@ -5,6 +5,10 @@ namespace WebCrawlerTest.AppConfig
 {
     class XmlConfigReader : IConfigReader
     {
+        private const string DepthTag = "depth";
+        private const string RootResourcesTag = "rootResources";
+        private const string ResourceTag = "resource";
+
         public ConfigData ReadApplicationConfig(string filePath)
         {
             XDocument xmlDocument = XDocument.Load(filePath);
@@ -19,17 +23,17 @@ namespace WebCrawlerTest.AppConfig
         private int GetDepth(XDocument document)
         {
             XElement root = document.Root;
-            string depth = root.Element("depth").Value;
+            string depth = root.Element(DepthTag).Value;
             return int.Parse(depth);
         }
 
         private string[] GetRootUrls(XDocument document)
         {
             XElement root = document.Root;
-            XElement rootResources = root.Element("rootResources");
+            XElement rootResources = root.Element(RootResourcesTag);
             List<string> rootUrls = new List<string>();
 
-            foreach(XElement resource in rootResources.Elements("resource"))
+            foreach(XElement resource in rootResources.Elements(ResourceTag))
             {
                 rootUrls.Add(resource.Value);
             }
