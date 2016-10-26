@@ -1,6 +1,7 @@
 ﻿using HtmlAgilityPack;
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace WebCrawlerLib.WebCrawler
@@ -11,7 +12,7 @@ namespace WebCrawlerLib.WebCrawler
         private const string SearchTag = "a";
         private const string SearchAttribute = "href";
 
-        private HtmlWeb webClient;
+        private HttpClient webClient;
         private int maxCrawlingDepth;
         private int MaxCrawlingDepth
         {
@@ -30,7 +31,7 @@ namespace WebCrawlerLib.WebCrawler
 
         public WebCrawler()
         {
-            webClient = new HtmlWeb();
+            webClient = new HttpClient();
         }
 
         public async Task<CrawlResult> PerformCrawlingAsync(int depth, string[] rootUrls)
@@ -53,13 +54,13 @@ namespace WebCrawlerLib.WebCrawler
             CrawlResult crawlResult = new CrawlResult(rootUrl);
             if(currentDepth < maxCrawlingDepth)
             {
-                HtmlNode htmlPage = await LoadHtml(rootUrl);
+                string htmlPage = await LoadHtml(rootUrl);
                 if(htmlPage == null)
                 {
                     return crawlResult;
                 }
 
-                List<String> urls = FindUrls(htmlPage);
+                ConcurrentBag<String> urls = FindUrls(htmlPage);
 
                 foreach (string url in urls)
                 {
@@ -71,17 +72,11 @@ namespace WebCrawlerLib.WebCrawler
             return crawlResult;
         }
 
-        private Task<HtmlNode> LoadHtml(string url)
+        private async Task<string> LoadHtml(string url)
         {
-
             try
             {
-                return Task.Run( () => 
-                    {
-                    HtmlDocument document = webClient.Load(url);
-                    return document.DocumentNode;
-                    }
-               );
+                return await webClient.GetStringAsync(url);
                 
             }
             catch (Exception e)
@@ -92,10 +87,14 @@ namespace WebCrawlerLib.WebCrawler
         }
 
 
-        private List<string> FindUrls(HtmlNode page)
+        private ConcurrentBag<string> FindUrls(string page)
         {
-            List<string> hrefTags = new List<string>();
-            Parallel.ForEach(page.Descendants(SearchTag), (link) => 
+            HtmlDocument htmlPage = new HtmlDocument();
+            htmlPage.LoadHtml(page);
+
+            ConcurrentBag<string> hrefTags = new ConcurrentBag<string>();
+
+            Parallel.ForEach(htmlPage.DocumentNode.Descendants(SearchTag), (link) => 
             {
                 if (link.Attributes.Contains(SearchAttribute))
                 {
