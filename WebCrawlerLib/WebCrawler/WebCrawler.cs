@@ -12,6 +12,8 @@ namespace WebCrawlerLib.WebCrawler
         private const string SearchTag = "a";
         private const string SearchAttribute = "href";
 
+        private bool wasDisposed;
+
         private HttpClient webClient;
         private int maxCrawlingDepth;
         private int MaxCrawlingDepth
@@ -32,20 +34,26 @@ namespace WebCrawlerLib.WebCrawler
         public WebCrawler()
         {
             webClient = new HttpClient();
+            wasDisposed = false;
         }
 
         public async Task<CrawlResult> PerformCrawlingAsync(int depth, string[] rootUrls)
         {
-                MaxCrawlingDepth = depth;
-                CrawlResult rootTree = new CrawlResult();
+            if (wasDisposed)
+            {
+                throw new ObjectDisposedException("WebCrawler");
+            }
 
-                foreach (string rootUrl in rootUrls)
-                {
-                    CrawlResult crawlUrl = await CreateUrlTree(rootUrl, 1);
-                    rootTree.AddNestedUrl(crawlUrl);
-                }
+           MaxCrawlingDepth = depth;
+           CrawlResult rootTree = new CrawlResult();
+
+           foreach (string rootUrl in rootUrls)
+            { 
+                CrawlResult crawlUrl = await CreateUrlTree(rootUrl, 1);
+                rootTree.AddNestedUrl(crawlUrl);
+            }
             
-                return rootTree;
+            return rootTree;
         }
 
 
@@ -112,7 +120,12 @@ namespace WebCrawlerLib.WebCrawler
 
         public void Dispose()
         {
-            webClient.Dispose();
+            if (!wasDisposed)
+            {
+                webClient.Dispose();
+                wasDisposed = true;
+            }
+
         }
     }
 }
