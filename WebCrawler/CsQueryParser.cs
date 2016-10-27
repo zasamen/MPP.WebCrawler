@@ -7,7 +7,7 @@ using CsQuery;
 
 namespace WebCrawler
 {
-    internal class CsQueryParser : IHtmlParser
+    public class CsQueryParser : IHtmlParser
     {
         public IEnumerable<string> GetLinksFromPage(string page)
         {

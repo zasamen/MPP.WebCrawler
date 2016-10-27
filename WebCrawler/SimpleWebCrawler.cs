@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace WebCrawler
 {
-    public sealed class WebCrawler : IWebCrawler
+    public sealed class SimpleWebCrawler : IWebCrawler
     {
         private readonly IHtmlParser _htmlParser;
         private int _nestingDepth;
@@ -34,13 +34,13 @@ namespace WebCrawler
             }
         }
 
-        public WebCrawler(IHtmlParser htmlParser, int nestingDepth)
+        public SimpleWebCrawler(IHtmlParser htmlParser, int nestingDepth)
         {
             _htmlParser = htmlParser;
             NestingDepth = nestingDepth;
         }
 
-        public WebCrawler(int nestingDepth) : this(new CsQueryParser(), nestingDepth)
+        public SimpleWebCrawler(int nestingDepth) : this(new CsQueryParser(), nestingDepth)
         {
         }
 

@@ -1,0 +1,33 @@
+﻿<Window x:Class="WebCrawlerApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WebCrawlerApp"
+        xmlns:viewModel="clr-namespace:WebCrawlerApp.ViewModel"
+        xmlns:converters="clr-namespace:WebCrawlerApp.Converters"
+        mc:Ignorable="d"
+        Title="Web crawler" Height="350" Width="525">
+
+    <Window.Resources>
+        <converters:CrawlResultConverter x:Key="CrawlResultConverter"/>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.DataContext>
+            <viewModel:WebCrawlerViewModel/>
+        </Grid.DataContext>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <TreeView Grid.Row="0" ItemsSource="{Binding Path=CrawlResult, Converter={StaticResource CrawlResultConverter}}"/>
+        
+        <Button Grid.Row="1" Width="100" Command="{Binding CrawlCommand}">
+            <Button.Content>
+                Crawl
+            </Button.Content>
+        </Button>
+    </Grid>
+</Window>

@@ -46,7 +46,7 @@
   <ItemGroup>
     <Compile Include="CsQueryParser.cs" />
     <Compile Include="IHtmlParser.cs" />
-    <Compile Include="WebCrawler.cs" />
+    <Compile Include="SimpleWebCrawler.cs" />
     <Compile Include="CrawlResult.cs" />
     <Compile Include="IWebCrawler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

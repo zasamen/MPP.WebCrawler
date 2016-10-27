@@ -55,7 +55,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="MainWindow.xaml">
+    <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -63,7 +63,16 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="Converters\CrawlResultConverter.cs" />
+    <Compile Include="Model\ConfigLoadingException.cs" />
+    <Compile Include="Model\IConfigProvider.cs" />
+    <Compile Include="Model\WebCrawlerModel.cs" />
+    <Compile Include="Model\XmlConfigReader.cs" />
+    <Compile Include="ViewModel\AsyncCommand.cs" />
+    <Compile Include="ViewModel\BaseViewModel.cs" />
+    <Compile Include="ViewModel\IAsyncCommand.cs" />
+    <Compile Include="ViewModel\WebCrawlerViewModel.cs" />
+    <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
@@ -94,6 +103,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\WebCrawler\WebCrawler.csproj">
+      <Project>{2DB6806A-BD16-44D9-BBF7-61D25B0B4EDD}</Project>
+      <Name>WebCrawler</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
