@@ -4,16 +4,16 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using CsQuery.ExtensionMethods.Internal;
 using NLog;
 
 namespace WebCrawler
 {
     public sealed class SimpleWebCrawler : IWebCrawler
     {
-        private readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly IHtmlParser _htmlParser;
         private int _nestingDepth;
-        private ISet<string>[] _visitedUrls;
 
         // Public
 
@@ -47,68 +47,68 @@ namespace WebCrawler
 
         public async Task<CrawlResult> PerformCrawlingAsync(string[] rootUrls)
         {
-            Initialize(rootUrls.Length);
-            return await InternalPerformCrawlingAsync(string.Empty, rootUrls, 1, -1);
+            return await CrawlRootsAsync(rootUrls);
         }
 
         // Internals
 
-        private void Initialize(int rootUrlsCount)
+        private async Task<CrawlResult> CrawlRootsAsync(string[] rootUrls)
         {
-            _visitedUrls = new ISet<string>[rootUrlsCount];
-            for (int i = 0; i < rootUrlsCount; i++)
-            {
-                _visitedUrls[i] = new HashSet<string>();
-            }
-        }
-
-        private async Task<CrawlResult> InternalPerformCrawlingAsync(string baseUrl, string[] rootUrls, int currentDepth,
-            int visitedUrlsIndex)
-        {
+            var visitedUrls = new ISet<string>[rootUrls.Length];
             var crawledUrls = new Dictionary<string, CrawlResult>();
 
-            if (currentDepth <= NestingDepth)
+            for (int i = 0; i < rootUrls.Length; i++)
             {
-                for (int i = 0; i < rootUrls.Length; i++)
+                visitedUrls[i] = new HashSet<string>();
+                string url = rootUrls[i];
+                string[] urlsToCrawl = await GetUniqueLinksFromUrlAsync(url);
+                if (urlsToCrawl != null)
                 {
-                    string absoluteUrl = GetAbsoluteUrl(baseUrl, rootUrls[i]);
-                    ISet<string> visitedUrlsForBranch;
-
-                    if (visitedUrlsIndex == -1)
-                    {
-                        visitedUrlsForBranch = _visitedUrls[i];
-                        visitedUrlsIndex = i;
-                    }
-                    else
-                    {
-                        visitedUrlsForBranch = _visitedUrls[visitedUrlsIndex];
-                    }
-
-                    if (!(crawledUrls.ContainsKey(absoluteUrl) || visitedUrlsForBranch.Contains(absoluteUrl)))
-                    {
-                        visitedUrlsForBranch.Add(absoluteUrl);
-
-                        string page = await LoadPageAsync(absoluteUrl);
-                        if (!string.IsNullOrEmpty(page))
-                        {
-                            string[] urlsToCrawl = _htmlParser.GetLinksFromPage(page).ToArray();
-
-                            CrawlResult nestedCrawlResult =
-                                await
-                                    InternalPerformCrawlingAsync(absoluteUrl, urlsToCrawl, currentDepth + 1,
-                                        visitedUrlsIndex);
-                            crawledUrls.Add(absoluteUrl, nestedCrawlResult);
-                        }
-                    }
+                    visitedUrls[i].Add(url);
+                    CrawlResult nestedResult = await CrawlNestedAsync(urlsToCrawl, 2, visitedUrls[i]);
+                    crawledUrls.Add(url, nestedResult);
                 }
             }
-
-            return new CrawlResult() {Urls = crawledUrls};
+            return new CrawlResult(crawledUrls);
         }
 
-        private async Task<string> LoadPageAsync(string url)
+        private async Task<CrawlResult> CrawlNestedAsync(string[] rootUrls, int currentDepth, ISet<string> visitedUrls)
+        {            
+            var crawledUrls = new Dictionary<string, CrawlResult>();
+            if (currentDepth <= NestingDepth)
+            {
+                crawledUrls.AddRange(rootUrls.Select(x => new KeyValuePair<string, CrawlResult>(x, new CrawlResult(new Dictionary<string, CrawlResult>()))));
+                KeyValuePair<string, CrawlResult>[] newUrls = crawledUrls.Where(x => !visitedUrls.Contains(x.Key)).ToArray();
+                visitedUrls.AddRange(rootUrls);
+                foreach (KeyValuePair<string, CrawlResult> urlResult in newUrls)
+                {
+                    string url = urlResult.Key;
+                    string[] urlsToCrawl = await GetUniqueLinksFromUrlAsync(url);
+                    if (urlsToCrawl != null)
+                    {
+                        crawledUrls[url] = await CrawlNestedAsync(urlsToCrawl, currentDepth + 1, visitedUrls);
+                    }                                               
+                }
+            }
+            return new CrawlResult(crawledUrls);                       
+        }
+
+        private async Task<string[]> GetUniqueLinksFromUrlAsync(string url)
         {
-            string result = string.Empty;
+            string[] result = null;
+            string page = await LoadPageAsync(url);
+            if (page != null)
+            {
+                result = _htmlParser.GetLinksFromPage(page).Select(x => GetAbsoluteUrl(url, x)).Distinct().ToArray();
+            }
+            return result;
+        }
+
+        // Static internals
+
+        private static async Task<string> LoadPageAsync(string url)
+        {
+            string result = null;
             try
             {
                 using (var httpClient = new HttpClient())
@@ -123,12 +123,10 @@ namespace WebCrawler
             return result;
         }
 
-        private void LogException(Exception exception)
+        private static void LogException(Exception exception)
         {
             Logger.Warn(exception.Message);
         }
-
-        // Static internals
 
         private static string GetAbsoluteUrl(string parentUrl, string url)
         {
