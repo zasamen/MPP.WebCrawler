@@ -8,6 +8,6 @@ namespace WebCrawler
 {
     public interface IWebCrawler
     {
-        Task<CrawlResult> PerformCrawlingAsync(IEnumerable<string> rootUrls);
+        Task<CrawlResult> PerformCrawlingAsync(string[] rootUrls);
     }
 }

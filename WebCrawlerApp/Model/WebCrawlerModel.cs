@@ -21,7 +21,7 @@ namespace WebCrawlerApp.Model
 
         public Task<CrawlResult> PerformCrawlingAsync()
         {
-            return _crawler.PerformCrawlingAsync(_configProvider.RootUrls);
+            return _crawler.PerformCrawlingAsync(_configProvider.RootUrls.ToArray());
         }
     }
 }

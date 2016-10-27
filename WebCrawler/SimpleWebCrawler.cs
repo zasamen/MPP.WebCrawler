@@ -11,6 +11,7 @@ namespace WebCrawler
     {
         private readonly IHtmlParser _htmlParser;
         private int _nestingDepth;
+        private ISet<string>[] _visitedUrls;
         
         // Public
 
@@ -44,27 +45,52 @@ namespace WebCrawler
         {
         }
 
-        public async Task<CrawlResult> PerformCrawlingAsync(IEnumerable<string> rootUrls)
+        public async Task<CrawlResult> PerformCrawlingAsync(string[] rootUrls)
         {
-            return await InternalPerformCrawlingAsync(string.Empty, rootUrls, 1);
+            Initialize(rootUrls.Length);
+            return await InternalPerformCrawlingAsync(string.Empty, rootUrls, 1, -1);
         }
 
         // Internals
 
-        private async Task<CrawlResult> InternalPerformCrawlingAsync(string baseUrl, IEnumerable<string> rootUrls,
-            int currentDepth)
+        private void Initialize(int rootUrlsCount)
+        {
+            _visitedUrls = new ISet<string>[rootUrlsCount];
+            for (int i = 0; i < rootUrlsCount; i++)
+            {
+                _visitedUrls[i] = new HashSet<string>();
+            }
+        }
+
+        private async Task<CrawlResult> InternalPerformCrawlingAsync(string baseUrl, string[] rootUrls, int currentDepth, int visitedUrlsIndex)
         {
             var crawledUrls = new Dictionary<string, CrawlResult>();
+
             if (currentDepth <= NestingDepth)
             {
-                foreach (string url in rootUrls)
+                for (int i = 0; i < rootUrls.Length; i++)
                 {
-                    string absoluteUrl = GetAbsoluteUrl(baseUrl, url);
-                    if (!crawledUrls.ContainsKey(absoluteUrl))
+                    string absoluteUrl = GetAbsoluteUrl(baseUrl, rootUrls[i]);                    
+                    ISet<string> visitedUrlsForBranch;
+
+                    if (visitedUrlsIndex == -1)
                     {
+                        visitedUrlsForBranch = _visitedUrls[i];
+                        visitedUrlsIndex = i;
+                    }
+                    else
+                    {
+                        visitedUrlsForBranch = _visitedUrls[visitedUrlsIndex];
+                    }
+
+                    if (!(crawledUrls.ContainsKey(absoluteUrl) || visitedUrlsForBranch.Contains(absoluteUrl)))
+                    {
+                        visitedUrlsForBranch.Add(absoluteUrl);
+
                         string page = await LoadPageAsync(absoluteUrl);
-                        IEnumerable<string> urlsToCrawl = _htmlParser.GetLinksFromPage(page);
-                        CrawlResult nestedCrawlResult = await InternalPerformCrawlingAsync(absoluteUrl, urlsToCrawl, currentDepth + 1);
+                        string[] urlsToCrawl = _htmlParser.GetLinksFromPage(page).ToArray();
+                        
+                        CrawlResult nestedCrawlResult = await InternalPerformCrawlingAsync(absoluteUrl, urlsToCrawl, currentDepth + 1, visitedUrlsIndex);
                         crawledUrls.Add(absoluteUrl, nestedCrawlResult);
                     }
                 }
