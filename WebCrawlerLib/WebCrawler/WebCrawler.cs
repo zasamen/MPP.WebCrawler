@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WebCrawlerLib.WebCrawler
 {
-    public class WebCrawler : ISimpleWebCrawler
+    public class WebCrawler : ISimpleWebCrawler, IDisposable
     {
 
         private const string SearchTag = "a";
@@ -108,6 +108,11 @@ namespace WebCrawlerLib.WebCrawler
             });
 
             return hrefTags;
+        }
+
+        public void Dispose()
+        {
+            webClient.Dispose();
         }
     }
 }
