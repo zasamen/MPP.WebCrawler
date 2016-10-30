@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<depth>2</depth>
+	<rootResources>
+    <resource>https://github.com/</resource>
+    <!--<resource>http://slo.ru</resource>
+    <resource>https://consul.io</resource>-->
+	</rootResources>
+</root>
