@@ -11,16 +11,15 @@ namespace WebCrawlerTest.Model
 
         public WebCrawlerModel()
         {
-            
             IConfigReader configReader = new XmlConfigReader();
             ConfigData = LoadApplicationConfig(configReader);
         }
 
-        public Task<CrawlResult> GetWebCrawlingResultAsync()
+        public async Task<CrawlResult> GetWebCrawlingResultAsync()
         {
             using (WebCrawler webCrawler = new WebCrawler())
             {
-                return webCrawler.PerformCrawlingAsync(ConfigData.Depth, ConfigData.RootResources);
+                return await webCrawler.PerformCrawlingAsync(ConfigData.Depth, ConfigData.RootResources);
             }
         }
 

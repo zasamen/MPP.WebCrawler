@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Xml.Linq;
 
 namespace WebCrawlerTest.AppConfig
@@ -13,9 +14,15 @@ namespace WebCrawlerTest.AppConfig
         {
             XDocument xmlDocument = XDocument.Load(filePath);
             ConfigData configData = new ConfigData();
-
-            configData.Depth = GetDepth(xmlDocument);
-            configData.RootResources = GetRootUrls(xmlDocument);
+            try
+            {
+                configData.Depth = GetDepth(xmlDocument);
+                configData.RootResources = GetRootUrls(xmlDocument);
+            }
+            catch(Exception e)
+            {
+                configData = new ConfigData();
+            }
 
             return configData;
         }

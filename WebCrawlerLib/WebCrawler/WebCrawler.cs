@@ -20,7 +20,7 @@ namespace WebCrawlerLib.WebCrawler
         {
             set
             {
-                if(value < 1 || value > 6)
+                if(outputAbroad(value))
                 {
                     maxCrawlingDepth = 6;
                 }
@@ -44,16 +44,21 @@ namespace WebCrawlerLib.WebCrawler
                 throw new ObjectDisposedException("WebCrawler");
             }
 
-           MaxCrawlingDepth = depth;
-           CrawlResult rootTree = new CrawlResult();
+            if(rootUrls.Length == 0)
+            {
+                return new CrawlResult("No nested urls");
+            }
 
+           MaxCrawlingDepth = depth;
+           CrawlResult rootTree = new CrawlResult("Crawling result");
+           
            foreach (string rootUrl in rootUrls)
-            { 
+           {
                 CrawlResult crawlUrl = await CreateUrlTree(rootUrl, 1);
                 rootTree.AddNestedUrl(crawlUrl);
-            }
+           }
             
-            return rootTree;
+           return rootTree;
         }
 
 
@@ -94,7 +99,6 @@ namespace WebCrawlerLib.WebCrawler
 
         }
 
-
         private ConcurrentBag<string> FindUrls(string page)
         {
             HtmlDocument htmlPage = new HtmlDocument();
@@ -116,6 +120,19 @@ namespace WebCrawlerLib.WebCrawler
             });
 
             return hrefTags;
+        }
+
+        //check this method. Delete magin numbers.
+        private bool outputAbroad(int value)
+        {
+            if (value < 1 || value > 6)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public void Dispose()
