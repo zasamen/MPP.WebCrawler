@@ -40,7 +40,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Contracts\Models\ICrawlerResult.cs" />
+    <Compile Include="Contracts\Models\ICrawlerNode.cs" />
+    <Compile Include="Contracts\Services\ILinkFinder.cs" />
+    <Compile Include="Contracts\Services\IMapper.cs" />
+    <Compile Include="Contracts\Services\IWebCrawlerService.cs" />
+    <Compile Include="Models\CrawlerNode.cs" />
+    <Compile Include="Models\CrawlerResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\LinkFinder.cs" />
+    <Compile Include="Services\Mapper.cs" />
+    <Compile Include="Services\WebCrawlerService.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

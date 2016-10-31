@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WebCrawler.Contracts.Services;
+using WebCrawler.Services;
 
 namespace WpfWebCrawler
 {
@@ -23,6 +25,24 @@ namespace WpfWebCrawler
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private async void button_Click(object sender, RoutedEventArgs e)
+        {
+            //try
+            {
+                using (IWebCrawlerService crawler = new WebCrawlerService(3))
+                {
+                    var time = DateTime.Now;
+                    //var result = await crawler.PerformCrawlingAsync(new[] { "http://tut.by", "http://tut.by", "http://tut.by", "http://tut.by" });
+                    var result = await crawler.PerformCrawlingAsync(new[] { "http://google.com", "http://google.com", "http://google.com", "http://google.com" });
+                    MessageBox.Show((DateTime.Now - time).ToString());
+                }
+            }
+            //catch(Exception exception)
+            //{
+            //    Console.WriteLine(exception.Message);
+            //}
         }
     }
 }
