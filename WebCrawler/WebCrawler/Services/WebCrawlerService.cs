@@ -13,11 +13,11 @@ namespace WebCrawler.Services
     {
         #region Private Members
 
-        private readonly ILinkFinder _linkFinder = new LinkFinder();
-        private readonly IMapper _mapper = new Mapper();
+        private readonly ILinkFinderService _linkFinder = new LinkFinderService();
+        private readonly IMapperService _mapper = new MapperService();
         private readonly CancellationTokenSource _cancellationToken = new CancellationTokenSource();
         private readonly int _maxNestingLevel;
-        private Task<ICrawlerResult> _mainTask;
+        private Task<ICrawlResult> _mainTask;
 
         #endregion
 
@@ -34,7 +34,7 @@ namespace WebCrawler.Services
 
         #region Public Methods
 
-        public Task<ICrawlerResult> PerformCrawlingAsync(IEnumerable<string> rootUrls)
+        public Task<ICrawlResult> PerformCrawlingAsync(IEnumerable<string> rootUrls)
         {
             var token = _cancellationToken.Token;
             _mainTask = Task.Run(() =>
@@ -42,7 +42,7 @@ namespace WebCrawler.Services
                 var result = rootUrls.AsParallel()
                                     .Select((string x) => GetInternalNodesAsync(x, 0,token).Result)
                                     .ToArray();
-                return _mapper.Map<ICrawlerResult>(result);
+                return _mapper.Map<ICrawlResult>(result);
             },token);
             return _mainTask;
         }
@@ -69,22 +69,22 @@ namespace WebCrawler.Services
 
         #region Private Members
 
-        private async Task<ICrawlerNode> GetInternalNodesAsync(string url, byte nestingLevel,CancellationToken token)
+        private async Task<ICrawlNode> GetInternalNodesAsync(string url, byte nestingLevel,CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
 
-            ICrawlerNode[] result = null;
+            ICrawlNode[] result = null;
             nestingLevel++;
 
             if (nestingLevel >= _maxNestingLevel)
-                return _mapper.Map<ICrawlerNode>(url, nestingLevel, result);
+                return _mapper.Map<ICrawlNode>(url, nestingLevel, result);
 
             string htmlCode = await LoadPageAsync(url);
             result = _linkFinder.Find(htmlCode)
                                 .AsParallel()
                                 .Select((string x) => GetInternalNodesAsync(x, nestingLevel,token).Result)
                                 .ToArray();
-            return _mapper.Map<ICrawlerNode>(url, --nestingLevel, result);
+            return _mapper.Map<ICrawlNode>(url, --nestingLevel, result);
         }
 
         private async Task<string> LoadPageAsync(string url)

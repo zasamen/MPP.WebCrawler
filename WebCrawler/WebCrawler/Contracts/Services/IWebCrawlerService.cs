@@ -7,6 +7,6 @@ namespace WebCrawler.Contracts.Services
 {
     public interface IWebCrawlerService : IDisposable
     {
-        Task<ICrawlerResult> PerformCrawlingAsync(IEnumerable<string> rootUrls);
+        Task<ICrawlResult> PerformCrawlingAsync(IEnumerable<string> rootUrls);
     }
 }

@@ -4,7 +4,7 @@ using WebCrawler.Contracts.Services;
 
 namespace WebCrawler.Services
 {
-    internal class LinkFinder : ILinkFinder
+    internal class LinkFinderService : ILinkFinderService
     {
         #region Private Members
 

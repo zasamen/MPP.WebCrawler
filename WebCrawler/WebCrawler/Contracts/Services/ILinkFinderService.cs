@@ -2,7 +2,7 @@
 
 namespace WebCrawler.Contracts.Services
 {
-    internal interface ILinkFinder
+    internal interface ILinkFinderService
     {
         IEnumerable<string> Find(string htlmFile);
     }

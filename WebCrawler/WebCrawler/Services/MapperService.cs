@@ -6,15 +6,15 @@ using WebCrawler.Contracts.Services;
 
 namespace WebCrawler.Services
 {
-    internal class Mapper: IMapper
+    internal class MapperService: IMapperService
     {
         #region Internal Members
 
-        public T Map<T> (string url, int nestingLevel, IEnumerable<ICrawlerNode> nodes)
+        public T Map<T> (string url, int nestingLevel, IEnumerable<ICrawlNode> nodes)
         {
-            if (typeof(T) == typeof(ICrawlerNode))
+            if (typeof(T) == typeof(ICrawlNode))
             {
-                return (T)(object)new CrawlerNode
+                return (T)(object)new CrawlNode
                 {
                     Url = url,
                     LevelDescription = (nestingLevel == 0) ? "Root node" : string.Format("Level {0}",nestingLevel),
@@ -25,11 +25,11 @@ namespace WebCrawler.Services
                 throw new ArgumentException(string.Format("Type {0} not found",typeof(T)));
         }
 
-        public T Map<T>(IEnumerable<ICrawlerNode> nodeList)
+        public T Map<T>(IEnumerable<ICrawlNode> nodeList)
         {
-            if (typeof(T) == typeof(ICrawlerResult))
+            if (typeof(T) == typeof(ICrawlResult))
             {
-                return (T)(object)new CrawlerResult
+                return (T)(object)new CrawlResult
                 {
                     RootNodes = nodeList
                 };

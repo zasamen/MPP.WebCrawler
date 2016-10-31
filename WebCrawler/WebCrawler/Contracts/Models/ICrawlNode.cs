@@ -2,10 +2,10 @@
 
 namespace WebCrawler.Contracts.Models
 {
-    public interface ICrawlerNode
+    public interface ICrawlNode
     {
         string Url { get; set; }
         string LevelDescription { get; set; }
-        IEnumerable<ICrawlerNode> InternalNodes { get; set; }
+        IEnumerable<ICrawlNode> InternalNodes { get; set; }
     }
 }

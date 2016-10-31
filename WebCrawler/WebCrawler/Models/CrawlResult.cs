@@ -3,8 +3,8 @@ using WebCrawler.Contracts.Models;
 
 namespace WebCrawler.Models
 {
-    public class CrawlerResult: ICrawlerResult
+    public class CrawlResult: ICrawlResult
     {
-        public IEnumerable<ICrawlerNode> RootNodes { get; set; }
+        public IEnumerable<ICrawlNode> RootNodes { get; set; }
     }
 }

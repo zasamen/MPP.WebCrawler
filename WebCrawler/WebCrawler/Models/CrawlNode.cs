@@ -3,10 +3,10 @@ using WebCrawler.Contracts.Models;
 
 namespace WebCrawler.Models
 {
-    public class CrawlerNode : ICrawlerNode
+    public class CrawlNode : ICrawlNode
     {
         public string Url { get; set; }
         public string LevelDescription { get; set; }
-        public IEnumerable<ICrawlerNode> InternalNodes { get; set; }
+        public IEnumerable<ICrawlNode> InternalNodes { get; set; }
     }
 }
