@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -16,6 +17,7 @@ namespace WebCrawler.Services
         private const byte MaxSearchDepth = 6;
         private readonly ILinkFinderService _linkFinder = new LinkFinderService();
         private readonly IMapperService _mapper = new MapperService();
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly CancellationTokenSource _cancellationToken = new CancellationTokenSource();
         private readonly int _searchDepth;
         private Task<ICrawlResult> _mainTask;
@@ -27,7 +29,7 @@ namespace WebCrawler.Services
         public WebCrawlerService(int searchDepth)
         {
             if (searchDepth <= 0 || searchDepth > MaxSearchDepth)
-                throw new ArgumentException("Nesting level must be between 1 and 6");
+                throw new ArgumentException(string.Format("Nesting level must be between 1 and {0}", MaxSearchDepth));
             _searchDepth = searchDepth;
         }
 
@@ -99,7 +101,7 @@ namespace WebCrawler.Services
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                _logger.Warn(e.Message);
                 return string.Empty;
             }
         }

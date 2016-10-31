@@ -1,4 +1,8 @@
-﻿using WebCrawler.Contracts.OutputModels;
+﻿using System;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Threading;
+using WebCrawler.Contracts.OutputModels;
 using WebCrawler.Contracts.Services;
 using WpfWebCrawler.AsyncCommands;
 using WpfWebCrawler.Models;
@@ -40,12 +44,22 @@ namespace WpfWebCrawler.ViewModels
         public WebCrawlerViewModel()
         {
             _webCrawlerModel = new WebCrawlerModel();
+
             CrawlCommand = new AsyncCommand(
-                async () => {CrawlResult = await _webCrawlerModel.GetCrawlResultAsync();});
+                async () => {
+                    try
+                    {
+                        CrawlResult = await _webCrawlerModel.GetCrawlResultAsync();
+                    }
+                    catch(Exception e)
+                    {
+                        MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                });
         }
 
         #endregion
+}
 
 
     }
-}
