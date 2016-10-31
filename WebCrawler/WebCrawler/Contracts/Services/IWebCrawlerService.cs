@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using WebCrawler.Contracts.Models;
+using WebCrawler.Contracts.OutputModels;
 
 namespace WebCrawler.Contracts.Services
 {

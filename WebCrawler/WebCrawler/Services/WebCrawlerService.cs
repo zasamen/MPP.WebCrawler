@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using WebCrawler.Contracts.Models;
+using WebCrawler.Contracts.OutputModels;
 using WebCrawler.Contracts.Services;
 
 namespace WebCrawler.Services
@@ -13,21 +13,22 @@ namespace WebCrawler.Services
     {
         #region Private Members
 
+        private const byte MaxSearchDepth = 6;
         private readonly ILinkFinderService _linkFinder = new LinkFinderService();
         private readonly IMapperService _mapper = new MapperService();
         private readonly CancellationTokenSource _cancellationToken = new CancellationTokenSource();
-        private readonly int _maxNestingLevel;
+        private readonly int _searchDepth;
         private Task<ICrawlResult> _mainTask;
 
         #endregion
 
         #region Ctor
 
-        public WebCrawlerService(int nestingLevel)
+        public WebCrawlerService(int searchDepth)
         {
-            if (nestingLevel <= 0 || nestingLevel > 6)
+            if (searchDepth <= 0 || searchDepth > MaxSearchDepth)
                 throw new ArgumentException("Nesting level must be between 1 and 6");
-            _maxNestingLevel = nestingLevel;
+            _searchDepth = searchDepth;
         }
 
         #endregion
@@ -76,8 +77,8 @@ namespace WebCrawler.Services
             ICrawlNode[] result = null;
             nestingLevel++;
 
-            if (nestingLevel >= _maxNestingLevel)
-                return _mapper.Map<ICrawlNode>(url, nestingLevel, result);
+            if (nestingLevel >= _searchDepth)
+                return _mapper.Map<ICrawlNode>(url, --nestingLevel, result);
 
             string htmlCode = await LoadPageAsync(url);
             result = _linkFinder.Find(htmlCode)

@@ -40,13 +40,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Contracts\Models\ICrawlResult.cs" />
-    <Compile Include="Contracts\Models\ICrawlNode.cs" />
+    <Compile Include="Contracts\OutputModels\ICrawlResult.cs" />
+    <Compile Include="Contracts\OutputModels\ICrawlNode.cs" />
     <Compile Include="Contracts\Services\ILinkFinderService.cs" />
     <Compile Include="Contracts\Services\IMapperService.cs" />
     <Compile Include="Contracts\Services\IWebCrawlerService.cs" />
-    <Compile Include="Models\CrawlNode.cs" />
-    <Compile Include="Models\CrawlResult.cs" />
+    <Compile Include="OutputModels\CrawlNode.cs" />
+    <Compile Include="OutputModels\CrawlResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\LinkFinderService.cs" />
     <Compile Include="Services\MapperService.cs" />

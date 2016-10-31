@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using WebCrawler.Contracts.Models;
+using WebCrawler.Contracts.OutputModels;
 
-namespace WebCrawler.Models
+namespace WebCrawler.OutputModels
 {
     public class CrawlResult: ICrawlResult
     {

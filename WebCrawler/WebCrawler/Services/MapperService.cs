@@ -1,8 +1,8 @@
-﻿using WebCrawler.Contracts.Models;
-using System;
-using WebCrawler.Models;
+﻿using System;
 using System.Collections.Generic;
+using WebCrawler.Contracts.OutputModels;
 using WebCrawler.Contracts.Services;
+using WebCrawler.OutputModels;
 
 namespace WebCrawler.Services
 {

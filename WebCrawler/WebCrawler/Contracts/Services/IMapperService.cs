@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using WebCrawler.Contracts.Models;
+using WebCrawler.Contracts.OutputModels;
 
 namespace WebCrawler.Contracts.Services
 {

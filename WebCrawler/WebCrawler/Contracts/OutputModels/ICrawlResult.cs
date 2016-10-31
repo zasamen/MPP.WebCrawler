@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace WebCrawler.Contracts.Models
+namespace WebCrawler.Contracts.OutputModels
 {
     public interface ICrawlResult
     {
