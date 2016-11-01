@@ -59,7 +59,7 @@ namespace WebCrawler.Services
             }
             catch(Exception e)
             {
-                Console.WriteLine(e);
+                _logger.Warn(e.Message);
             }
             finally
             {
@@ -70,20 +70,19 @@ namespace WebCrawler.Services
 
         #endregion
 
-        #region Private Members
+        #region Private Methods
 
         private async Task<ICrawlNode> GetInternalNodesAsync(string url, byte nestingLevel,CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
 
-            ICrawlNode[] result = null;
             nestingLevel++;
 
             if (nestingLevel >= _searchDepth)
-                return _mapper.Map<ICrawlNode>(url, --nestingLevel, result);
+                return _mapper.Map<ICrawlNode>(url, --nestingLevel, null);
 
             string htmlCode = await LoadPageAsync(url);
-            result = _linkFinder.Find(htmlCode)
+            var result = _linkFinder.Find(htmlCode)
                                 .AsParallel()
                                 .Select((string x) => GetInternalNodesAsync(x, nestingLevel,token).Result)
                                 .ToArray();

@@ -2,7 +2,6 @@
 using System.Configuration;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Windows;
 using WebCrawler.Contracts.OutputModels;
 using WebCrawler.Contracts.Services;
 using WebCrawler.Services;

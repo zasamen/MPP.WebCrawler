@@ -2,9 +2,7 @@
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Threading;
 using WebCrawler.Contracts.OutputModels;
-using WebCrawler.Contracts.Services;
 using WpfWebCrawler.Commands;
 using WpfWebCrawler.Models;
 
