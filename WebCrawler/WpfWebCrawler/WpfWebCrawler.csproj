@@ -57,8 +57,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AsyncCommands\AsyncCommand.cs" />
-    <Compile Include="AsyncCommands\IAsyncCommand.cs" />
+    <Compile Include="Commands\AsyncCommand.cs" />
+    <Compile Include="Commands\IAsyncCommand.cs" />
+    <Compile Include="Commands\SyncCommand.cs" />
     <Compile Include="Converters\CrawlResultConverter.cs" />
     <Compile Include="Models\WebCrawlerModel.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />

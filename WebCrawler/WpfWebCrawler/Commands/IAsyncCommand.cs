@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace WpfWebCrawler.AsyncCommands
+namespace WpfWebCrawler.Commands
 {
     internal interface IAsyncCommand: ICommand
     {

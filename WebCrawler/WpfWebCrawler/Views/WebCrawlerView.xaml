@@ -22,7 +22,9 @@
                 Command="{Binding CrawlCommand}"/>
         <TreeView x:Name="CrawlTreeView" HorizontalAlignment="Left" Height="299" Margin="10,10,0,0" VerticalAlignment="Top" Width="417"
                   ItemsSource="{Binding Path = CrawlResult, Mode=OneWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CrawlResultConverter}}"/>
-        <Button x:Name="ClickerButton" Content="Ckick me" HorizontalAlignment="Left" Margin="432,158,0,0" VerticalAlignment="Top" Width="76"/>
-        <Label x:Name="ClickerResult" Content="" HorizontalAlignment="Left" Margin="432,202,0,0" VerticalAlignment="Top" Width="76"/>
+        <Button x:Name="ClickerButton" Content="Click me" HorizontalAlignment="Left" Margin="432,158,0,0" VerticalAlignment="Top" Width="76"
+                 Command="{Binding ClickCommand}"/>
+        <Label x:Name="ClickerResult" HorizontalAlignment="Left" Margin="432,202,0,0" VerticalAlignment="Top" Width="76"
+                Content="{Binding Path = ClickCount, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
     </Grid>
 </Window>
