@@ -6,5 +6,6 @@ namespace WpfWebCrawler.Commands
     internal interface IAsyncCommand: ICommand
     {
         Task ExecuteAsync(object parameter);
+        void SetCanExecuteStatus(bool status);
     }
 }

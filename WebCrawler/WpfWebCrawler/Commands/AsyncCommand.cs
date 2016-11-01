@@ -34,9 +34,7 @@ namespace WpfWebCrawler.Commands
 
         public async void Execute(object parameter)
         {
-            _canExecute = false;
             await ExecuteAsync(parameter);
-            _canExecute = true;
         }
 
         public Task ExecuteAsync(object parameter)
@@ -47,6 +45,17 @@ namespace WpfWebCrawler.Commands
         public bool CanExecute(object parameter)
         {
             return _canExecute;
+        }
+
+        public void SetFalse()
+        {
+            _canExecute = false;
+        }
+
+        public void SetCanExecuteStatus(bool status)
+        {
+            _canExecute = status;
+            CanExecuteChanged?.Invoke(this, new EventArgs());
         }
 
         #endregion

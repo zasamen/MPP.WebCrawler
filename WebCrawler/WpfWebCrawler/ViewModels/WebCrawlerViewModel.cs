@@ -80,7 +80,9 @@ namespace WpfWebCrawler.ViewModels
         {
             try
             {
+                CrawlCommand.SetCanExecuteStatus(false);
                 CrawlResult = await _webCrawlerModel.GetCrawlResultAsync();
+                CrawlCommand.SetCanExecuteStatus(true);
             }
             catch (Exception e)
             {
