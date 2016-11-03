@@ -15,6 +15,7 @@ namespace WpfWebCrawler.ViewModels
         private readonly WebCrawlerModel _webCrawlerModel = new WebCrawlerModel();
         private ICrawlResult _crawlResult;
         private int _clickCount;
+        private string _errorMessage;
 
         #endregion
 
@@ -34,6 +35,24 @@ namespace WpfWebCrawler.ViewModels
 
                 _crawlResult = value;
                 OnPropertyChanged();
+            }
+        }
+
+        public string ErrorMessage
+        {
+            get
+            {
+                return _errorMessage;
+            }
+           private  set
+            {
+                {
+                    if (_errorMessage == value)
+                        return;
+
+                    _errorMessage = value;
+                    OnPropertyChanged();
+                }
             }
         }
 
@@ -76,15 +95,21 @@ namespace WpfWebCrawler.ViewModels
 
         private async Task CrawlCommandHandler()
         {
+            var errorMessage = string.Empty;
             try
             {
+                ErrorMessage = string.Empty;
                 CrawlCommand.SetCanExecuteStatus(false);
                 CrawlResult = await _webCrawlerModel.GetCrawlResultAsync();
-                CrawlCommand.SetCanExecuteStatus(true);
             }
             catch (Exception e)
             {
-                MessageBox.Show(e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                errorMessage = string.Format("Error: {0}", e.Message);
+            }
+            finally
+            {
+                ErrorMessage = errorMessage;
+                CrawlCommand.SetCanExecuteStatus(true);
             }
         }
 

@@ -15,16 +15,22 @@
     </Window.Resources>
 
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0*"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
         <Grid.DataContext>
             <viewModels:WebCrawlerViewModel/>
         </Grid.DataContext>
         <Button x:Name="CrawlButton" Content="Crawl" HorizontalAlignment="Left" Margin="432,39,0,0" VerticalAlignment="Top" Width="75"
-                Command="{Binding CrawlCommand}"/>
-        <TreeView x:Name="CrawlTreeView" HorizontalAlignment="Left" Height="299" Margin="10,10,0,0" VerticalAlignment="Top" Width="417"
-                  ItemsSource="{Binding Path = CrawlResult, Mode=OneWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CrawlResultConverter}}"/>
+                Command="{Binding CrawlCommand}" Grid.ColumnSpan="2"/>
+        <TreeView x:Name="CrawlTreeView" HorizontalAlignment="Left" Height="259" Margin="10,10,0,0" VerticalAlignment="Top" Width="417"
+                  ItemsSource="{Binding Path = CrawlResult, Mode=OneWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CrawlResultConverter}}" Grid.ColumnSpan="2"/>
         <Button x:Name="ClickerButton" Content="Click me" HorizontalAlignment="Left" Margin="432,158,0,0" VerticalAlignment="Top" Width="76"
-                 Command="{Binding ClickCommand}"/>
+                 Command="{Binding ClickCommand}" Grid.ColumnSpan="2"/>
         <Label x:Name="ClickerResult" HorizontalAlignment="Left" Margin="432,202,0,0" VerticalAlignment="Top" Width="76"
-                Content="{Binding Path = ClickCount, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
+                Content="{Binding Path = ClickCount, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Grid.ColumnSpan="2"/>
+        <Label x:Name="Error" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="10,283,0,0" VerticalAlignment="Top" Width="417" Foreground="#FFF30D0D"
+                Content="{Binding Path = ErrorMessage, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}"/>
     </Grid>
 </Window>
