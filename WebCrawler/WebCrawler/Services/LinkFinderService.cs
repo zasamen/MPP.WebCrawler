@@ -1,28 +1,18 @@
-﻿using System.Collections.Generic;
-using System.Text.RegularExpressions;
+﻿using CsQuery;
+using System.Linq;
+using System.Collections.Generic;
 using WebCrawler.Contracts.Services;
 
 namespace WebCrawler.Services
 {
     internal class LinkFinderService : ILinkFinderService
     {
-        #region Private Members
-
-        private const string _pattern = @"<a[^>]*href=(?:""([\S]+)"")[^>]*>";
-
-        #endregion
-
         #region Internal Methods
 
         public IEnumerable<string> Find(string htlmFile)
         {
-            var result = new List<string>();
-            var matches = Regex.Matches(htlmFile, _pattern, RegexOptions.IgnoreCase);
-            foreach(Match match in matches)
-            {
-                result.Add(match.Groups[1].Value);
-            }
-            return result;
+            CQ csQuery = CQ.CreateDocument(htlmFile);
+            return csQuery.Select("a").Select(x => x.GetAttribute("href")).Where(x => !string.IsNullOrEmpty(x));
         }
 
         #endregion
