@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Specialized;
 using System.Configuration;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -13,24 +13,30 @@ namespace WpfWebCrawler.Models
     {
         #region Public Methods
 
-        public async Task<ICrawlResult> GetCrawlResultAsync()
+        public Task<ICrawlResult> GetCrawlResultAsync()
         {
-            try
+            return Task.Run(async () =>
             {
-                ConfigurationManager.RefreshSection("appSettings");
-                int searchDepth = int.Parse(ConfigurationManager.AppSettings["SearchDepth"]);
-                Regex regex = new Regex(@"\s+");
-                string[] rootUrls = regex.Split(ConfigurationManager.AppSettings["RootUrls"]);
-                using (IWebCrawlerService _webCrawler = new WebCrawlerService(searchDepth))
+                var regex = new Regex(@"\s+");
+                var appSettings = GetRefreshedSettings();
+                var searchDepth = int.Parse(appSettings["SearchDepth"]);
+                var rootUrls = regex.Split(appSettings["RootUrls"]);
+                var concurrencyLevel = int.Parse(appSettings["ConcurrencyLevel"]);
+                using (IWebCrawlerService webCrawler = new WebCrawlerService(searchDepth, concurrencyLevel))
                 {
-                    return await _webCrawler.PerformCrawlingAsync(rootUrls);
+                    return await webCrawler.PerformCrawlingAsync(rootUrls);
                 }
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
+            });
+        }
 
+        #endregion
+
+        #region Private Methods
+
+        private NameValueCollection GetRefreshedSettings()
+        {
+            ConfigurationManager.RefreshSection("appSettings");
+            return ConfigurationManager.AppSettings;
         }
 
         #endregion

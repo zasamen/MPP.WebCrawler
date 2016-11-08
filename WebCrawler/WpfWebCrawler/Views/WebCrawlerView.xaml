@@ -4,8 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:WpfWebCrawler.ViewModels"
-        xmlns:views="clr-namespace:WpfWebCrawler.Views"
-        xmlns:local="clr-namespace:WpfWebCrawler"
         xmlns:converters="clr-namespace:WpfWebCrawler.Converters"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
@@ -25,7 +23,9 @@
         <Button x:Name="CrawlButton" Content="Crawl" HorizontalAlignment="Left" Margin="432,39,0,0" VerticalAlignment="Top" Width="75"
                 Command="{Binding CrawlCommand}" Grid.ColumnSpan="2"/>
         <TreeView x:Name="CrawlTreeView" HorizontalAlignment="Left" Height="259" Margin="10,10,0,0" VerticalAlignment="Top" Width="417"
-                  ItemsSource="{Binding Path = CrawlResult, Mode=OneWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CrawlResultConverter}}" Grid.ColumnSpan="2"/>
+                  ItemsSource="{Binding Path = CrawlResult, Mode=OneWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource CrawlResultConverter}}"
+                  
+                   Grid.ColumnSpan="2"/>
         <Button x:Name="ClickerButton" Content="Click me" HorizontalAlignment="Left" Margin="432,158,0,0" VerticalAlignment="Top" Width="76"
                  Command="{Binding ClickCommand}" Grid.ColumnSpan="2"/>
         <Label x:Name="ClickerResult" HorizontalAlignment="Left" Margin="432,202,0,0" VerticalAlignment="Top" Width="76"

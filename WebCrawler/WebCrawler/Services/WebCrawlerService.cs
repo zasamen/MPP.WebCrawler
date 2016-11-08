@@ -19,17 +19,20 @@ namespace WebCrawler.Services
         private readonly IMapperService _mapper = new MapperService();
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly CancellationTokenSource _cancellationToken = new CancellationTokenSource();
+        private readonly SemaphoreSlim _semaphore;
         private readonly int _searchDepth;
-        private Task<ICrawlResult> _mainTask;
 
         #endregion
 
         #region Ctor
 
-        public WebCrawlerService(int searchDepth)
+        public WebCrawlerService(int searchDepth, int concurrencyLevel)
         {
             if (searchDepth <= 0 || searchDepth > MaxSearchDepth)
-                throw new ArgumentException(string.Format("Nesting level must be between 1 and {0}", MaxSearchDepth));
+                throw new ArgumentException($"Nesting level must be between 1 and {MaxSearchDepth}");
+            if (concurrencyLevel <= 0)
+                throw new ArgumentException("Nesting level must be greater than 1");
+            _semaphore = new SemaphoreSlim(concurrencyLevel);
             _searchDepth = searchDepth;
         }
 
@@ -37,17 +40,12 @@ namespace WebCrawler.Services
 
         #region Public Methods
 
-        public Task<ICrawlResult> PerformCrawlingAsync(IEnumerable<string> rootUrls)
+        public async Task<ICrawlResult> PerformCrawlingAsync(IEnumerable<string> rootUrls)
         {
             var token = _cancellationToken.Token;
-            _mainTask = Task.Run(() =>
-            { 
-                var result = rootUrls.AsParallel()
-                                    .Select((string x) => GetInternalNodesAsync(x, 0,token).Result)
-                                    .ToArray();
-                return _mapper.Map<ICrawlResult>(result);
-            },token);
-            return _mainTask;
+            var tasks = rootUrls.Select(x => GetInternalNodesAsync(x, 0, token));
+            var result = await Task.WhenAll(tasks);
+            return _mapper.Map<ICrawlResult>(result);
         }
 
         public void Dispose()
@@ -55,7 +53,6 @@ namespace WebCrawler.Services
             try
             {
                 _cancellationToken.Cancel();
-                _mainTask.Wait();
             }
             catch(Exception e)
             {
@@ -63,7 +60,6 @@ namespace WebCrawler.Services
             }
             finally
             {
-                _mainTask.Dispose();
                 _cancellationToken.Dispose();
             }
         }
@@ -72,37 +68,40 @@ namespace WebCrawler.Services
 
         #region Private Methods
 
-        private async Task<ICrawlNode> GetInternalNodesAsync(string url, byte nestingLevel,CancellationToken token)
+        private async Task<ICrawlNode> GetInternalNodesAsync(string url, int nestingLevel,CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
 
-            nestingLevel++;
-
             if (nestingLevel >= _searchDepth)
-                return _mapper.Map<ICrawlNode>(url, --nestingLevel, null);
+                return _mapper.Map<ICrawlNode>(url, nestingLevel, null);
 
-            string htmlCode = await LoadPageAsync(url);
-            var result = _linkFinder.Find(htmlCode)
-                                .AsParallel()
-                                .Select((string x) => GetInternalNodesAsync(x, nestingLevel,token).Result)
-                                .ToArray();
-            return _mapper.Map<ICrawlNode>(url, --nestingLevel, result);
+            var htmlCode = await LoadPageAsync(url);
+
+            var tasks = _linkFinder.Find(htmlCode).Select(x=>GetInternalNodesAsync(x, nestingLevel+1, token));
+            var result = await Task.WhenAll(tasks);
+            return _mapper.Map<ICrawlNode>(url, nestingLevel, result);
         }
 
         private async Task<string> LoadPageAsync(string url)
         {
+            var result = string.Empty;
+            await _semaphore.WaitAsync();
             try
             {
                 using (var webClient = new WebClient())
                 {
-                    return await webClient.DownloadStringTaskAsync(url);
+                    result = await webClient.DownloadStringTaskAsync(url);
                 }
             }
             catch (Exception e)
             {
                 _logger.Warn(e.Message);
-                return string.Empty;
             }
+            finally
+            {
+                _semaphore.Release();
+            }
+            return result;
         }
 
         #endregion
