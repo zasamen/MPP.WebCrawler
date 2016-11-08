@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 using WebCrawler.Contracts.OutputModels;
 using WpfWebCrawler.Commands;
@@ -80,9 +79,6 @@ namespace WpfWebCrawler.ViewModels
 
         public WebCrawlerViewModel()
         {
-            _webCrawlerModel = new WebCrawlerModel();
-            _clickCount = 0;
-
             CrawlCommand = new AsyncCommand(CrawlCommandHandler);
             ClickCommand = new SyncCommand(p => ClickCommandHandler(),p => true);
         }
@@ -98,13 +94,13 @@ namespace WpfWebCrawler.ViewModels
             var errorMessage = string.Empty;
             try
             {
-                ErrorMessage = string.Empty;
+                ErrorMessage = errorMessage;
                 CrawlCommand.SetCanExecuteStatus(false);
                 CrawlResult = await _webCrawlerModel.GetCrawlResultAsync();
             }
             catch (Exception e)
             {
-                errorMessage = string.Format("Error: {0}", e.Message);
+                errorMessage = $"Error: {e.Message}";
             }
             finally
             {

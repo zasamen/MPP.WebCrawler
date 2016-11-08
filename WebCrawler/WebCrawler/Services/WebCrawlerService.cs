@@ -16,7 +16,6 @@ namespace WebCrawler.Services
 
         private const byte MaxSearchDepth = 6;
         private readonly ILinkFinderService _linkFinder = new LinkFinderService();
-        private readonly IMapperService _mapper = new MapperService();
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly CancellationTokenSource _cancellationToken = new CancellationTokenSource();
         private readonly SemaphoreSlim _semaphore;
@@ -45,7 +44,7 @@ namespace WebCrawler.Services
             var token = _cancellationToken.Token;
             var tasks = rootUrls.Select(x => GetInternalNodesAsync(x, 0, token));
             var result = await Task.WhenAll(tasks);
-            return _mapper.Map<ICrawlResult>(result);
+            return Mapper.Map<ICrawlResult>(result);
         }
 
         public void Dispose()
@@ -60,6 +59,7 @@ namespace WebCrawler.Services
             }
             finally
             {
+                _semaphore.Dispose();
                 _cancellationToken.Dispose();
             }
         }
@@ -73,13 +73,13 @@ namespace WebCrawler.Services
             token.ThrowIfCancellationRequested();
 
             if (nestingLevel >= _searchDepth)
-                return _mapper.Map<ICrawlNode>(url, nestingLevel, null);
+                return Mapper.Map<ICrawlNode>(url, nestingLevel, null);
 
             var htmlCode = await LoadPageAsync(url);
 
             var tasks = _linkFinder.Find(htmlCode).Select(x=>GetInternalNodesAsync(x, nestingLevel+1, token));
             var result = await Task.WhenAll(tasks);
-            return _mapper.Map<ICrawlNode>(url, nestingLevel, result);
+            return Mapper.Map<ICrawlNode>(url, nestingLevel, result);
         }
 
         private async Task<string> LoadPageAsync(string url)

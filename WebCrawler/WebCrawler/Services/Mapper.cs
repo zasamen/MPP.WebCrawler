@@ -1,41 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using WebCrawler.Contracts.OutputModels;
-using WebCrawler.Contracts.Services;
 using WebCrawler.OutputModels;
 
 namespace WebCrawler.Services
 {
-    internal class MapperService: IMapperService
+    internal static class Mapper
     {
         #region Internal Members
 
-        public T Map<T> (string url, int nestingLevel, IEnumerable<ICrawlNode> nodes)
+        internal static T Map<T>(string url, int nestingLevel, IEnumerable<ICrawlNode> nodes)
         {
             if (typeof(T) == typeof(ICrawlNode))
-            {
                 return (T)(object)new CrawlNode
                 {
                     Url = url,
-                    LevelDescription = (nestingLevel == 0) ? "Root node" : string.Format("Level {0}",nestingLevel),
+                    LevelDescription = (nestingLevel == 0) ? "Root node" : $"Level {nestingLevel}",
                     InternalNodes = nodes
                 };
-            }
-            else
-                throw new ArgumentException(string.Format("Type {0} not found",typeof(T)));
+            throw new ArgumentException($"Type {typeof(T)} not found");
         }
 
-        public T Map<T>(IEnumerable<ICrawlNode> nodeList)
+        internal static T Map<T>(IEnumerable<ICrawlNode> nodeList)
         {
             if (typeof(T) == typeof(ICrawlResult))
-            {
                 return (T)(object)new CrawlResult
                 {
                     RootNodes = nodeList
                 };
-            }
-            else
-                throw new ArgumentException(string.Format("Type {0} not found", typeof(T)));
+            throw new ArgumentException($"Type {typeof(T)} not found");
         }
 
         #endregion

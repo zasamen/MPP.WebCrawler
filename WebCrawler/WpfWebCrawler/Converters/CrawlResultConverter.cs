@@ -21,7 +21,7 @@ namespace WpfWebCrawler.Converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            ICrawlResult crawlResult = value as ICrawlResult;
+            var crawlResult = value as ICrawlResult;
             return _currentDispatcher.Invoke(() => crawlResult?.RootNodes?.Select(Map),
                         DispatcherPriority.Background);
         }
@@ -45,9 +45,9 @@ namespace WpfWebCrawler.Converters
         {
             return new TreeViewItem()
             {
-                Header = string.Format("{0} ({1})", node?.LevelDescription, node?.Url),
+                Header = $"{node?.LevelDescription} ({node?.Url})",
                 ItemsSource = _currentDispatcher.Invoke(() => node?.InternalNodes?.Select(Map),
-                    DispatcherPriority.Background)
+                                    DispatcherPriority.Background)
             };
         }
 

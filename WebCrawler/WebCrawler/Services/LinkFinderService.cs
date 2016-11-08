@@ -27,11 +27,11 @@ namespace WebCrawler.Services
             {
                 var htmlSnippet = new HtmlDocument();
                 htmlSnippet.LoadHtml(htmlFile);
-                result =  htmlSnippet.DocumentNode.SelectNodes("//a[@href]")
-                                                .Select(x => x?.Attributes["href"].Value)
-                                                .Where(x => !string.IsNullOrEmpty(x));
+                result = htmlSnippet.DocumentNode.SelectNodes("//a[@href]")
+                                .Select(x => x?.Attributes["href"].Value)
+                                .Where(x => !string.IsNullOrEmpty(x));
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 _logger.Warn(e.Message);
             }

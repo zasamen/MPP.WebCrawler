@@ -7,8 +7,8 @@ namespace WpfWebCrawler.Commands
     {
         #region Private Members
 
-        private Predicate<object> _canExecute;
-        private Action<object> _execute;
+        private readonly Predicate<object> _canExecute;
+        private readonly Action<object> _execute;
 
         #endregion
 
