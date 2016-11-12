@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using MPP.WebCrawler.ViewModel;
 
 namespace MPP.WebCrawler
 {
@@ -23,6 +24,7 @@ namespace MPP.WebCrawler
         public MainWindow()
         {
             InitializeComponent();
+            DataContext =new WebCrawlerViewModel();
         }
     }
 }
