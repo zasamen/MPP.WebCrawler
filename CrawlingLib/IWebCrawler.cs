@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace CrawlingLib
 {
-    public class Class1
+    public interface IWebCrawler
     {
+
+        Task<CrawlingResult> PerformCrawlingAsync();
     }
 }
