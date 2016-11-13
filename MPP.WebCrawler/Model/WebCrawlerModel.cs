@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using CrawlingLib;
 using MPP.WebCrawler.ViewModel;
 
 namespace MPP.WebCrawler.Model
@@ -39,12 +40,13 @@ namespace MPP.WebCrawler.Model
         {
             isExecuting = true;
             Counter = 0;
-            int i=await DoImportantThing();
+            CrawlingResult cr = await DoImportantThingAsync();
             isExecuting = false;
         }
-        internal async Task<int> DoImportantThing()
+        internal async Task<CrawlingResult> DoImportantThingAsync()
         {
-            return await Task.Run(() => { Thread.Sleep(1000);return 0; });
+
+            return await new WebCrawlingPerformer(1).PerformCrawlingAsync(new string[]{ "http://motherfuckingwebsite.com/"});
         }
 
 

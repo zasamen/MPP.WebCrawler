@@ -9,6 +9,6 @@ namespace CrawlingLib
     public interface IWebCrawler
     {
 
-        Task<CrawlingResult> PerformCrawlingAsync();
+        Task<CrawlingResult> PerformCrawlingAsync(string[] urls);
     }
 }
