@@ -9,23 +9,21 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="250" Width="325">
     <Grid>
-        <DockPanel LastChildFill="False">
-            <TreeView x:Name="TV1" DockPanel.Dock="Top" VerticalAlignment="Stretch" Margin="5 10 5 0" ItemsSource="{Binding roots}">
+        <DockPanel LastChildFill="true">
+            <StackPanel DockPanel.Dock="Bottom" Margin="5 10 5 10">
+                <Button Margin="10 0 10 10" Command="{Binding DoCommand, Mode=TwoWay}" HorizontalAlignment="Center">
+                    SPECIAL BUTTON
+                </Button>
+              <Button Margin="10 10 10 0" Command="{Binding AddCommand}" Content="{Binding Path=CurrentModel.Counter}" HorizontalAlignment="Center" MinHeight="20" MinWidth="20"/>
+            </StackPanel>
+        <TreeView x:Name="TV1" DockPanel.Dock="Top" VerticalAlignment="Stretch" Margin="5 10 5 0" ItemsSource="{Binding roots}" MinHeight="40">
                 <TreeView.Resources>
                     <HierarchicalDataTemplate DataType="{x:Type Model:CustomItem}"
                                               ItemsSource="{Binding Items }">
                         <TextBlock Text="{Binding Title}"/>
                     </HierarchicalDataTemplate>
                 </TreeView.Resources>
-            </TreeView>
-            <StackPanel DockPanel.Dock="Bottom" Margin="5 10 5 10" >
-                <Button Margin="10 0 10 10" Command="{Binding AddCommand}" HorizontalAlignment="Center">
-                    SPECIAL BUTTON
-                </Button>
-                <Button Margin="10 10 10 0" HorizontalAlignment="Center">
-                    MY CONTENT BUTTON
-                </Button>
-            </StackPanel>
+            </TreeView> 
         </DockPanel>
     </Grid>
 </Window>

@@ -9,9 +9,9 @@ namespace MPP.WebCrawler.ViewModel
     class WebCrawlerViewModel : INotifyPropertyChanged
     {
 
-        public ObservableCollection<CustomItem> roots { get; set; }
+        public WebCrawlerModel CurrentModel { get; set; }
 
-        public CustomItem root { get; set; }
+        public ObservableCollection<CustomItem> roots { get; set; }
 
         private RelayCommand addCommand;
 
@@ -19,12 +19,33 @@ namespace MPP.WebCrawler.ViewModel
         {
             get
             {
-                return (new RelayCommand(o => roots.Add(new CustomItem { Title = "myCI" })));
+                return addCommand;
+            }
+            private set
+            {
+                addCommand = value;
+            }
+        }
+
+        private RelayCommand doCommand;
+
+        public RelayCommand DoCommand
+        {
+            get
+            {
+                return doCommand;
+            }
+            private set
+            {
+                doCommand = value;
             }
         }
 
         public WebCrawlerViewModel()
         {
+            CurrentModel = new WebCrawlerModel();
+            addCommand = new RelayCommand(CurrentModel.DoNothing);
+            doCommand = new RelayCommand(CurrentModel.DoCrawling,CurrentModel.CanCrawling);
             roots = new ObservableCollection<CustomItem> {
                 new CustomItem {Title="root1" },
                 new CustomItem {Title="root2" },
@@ -39,11 +60,6 @@ namespace MPP.WebCrawler.ViewModel
                 {
                     item.Items.Add(new CustomItem { Title = "leaf" + j });
                 }
-            }
-            root = new CustomItem { Title = "mytitle" };
-            foreach(var subroot in roots)
-            {
-                root.Items.Add(subroot);
             }
         }
         
