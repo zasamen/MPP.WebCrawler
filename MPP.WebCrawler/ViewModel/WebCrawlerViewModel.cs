@@ -6,46 +6,44 @@ using MPP.WebCrawler.Model;
 
 namespace MPP.WebCrawler.ViewModel
 {
-    class WebCrawlerViewModel : NotifyPropertyChanged
+    class WebCrawlerViewModel
     {
 
         public WebCrawlerModel CurrentModel { get; set; }
 
-        public ObservableCollection<ObservableResult> roots { get; set; }
+        private RelayCommand incrementCommand;
 
-        private RelayCommand addCommand;
-
-        public RelayCommand AddCommand
+        public RelayCommand IncrementCommand
         {
             get
             {
-                return addCommand;
+                return incrementCommand;
             }
             private set
             {
-                addCommand = value;
+                incrementCommand = value;
             }
         }
 
-        private RelayCommand doCommand;
+        private RelayCommand crawlCommand;
 
-        public RelayCommand DoCommand
+        public RelayCommand CrawlCommand
         {
             get
             {
-                return doCommand;
+                return crawlCommand;
             }
             private set
             {
-                doCommand = value;
+                crawlCommand = value;
             }
         }
 
         public WebCrawlerViewModel()
         {
             CurrentModel = new WebCrawlerModel();
-            addCommand = new RelayCommand(CurrentModel.IncrementCounterForCheckingUIAsync);
-            doCommand = new RelayCommand(CurrentModel.DoCrawling,CurrentModel.CanCrawling);
+            incrementCommand = new RelayCommand(CommandsImplementation.IncrementCounterForCheckingUI);
+            crawlCommand = new RelayCommand(CommandsImplementation.Crawl,CommandsImplementation.CanCrawling);
         }
         
     }

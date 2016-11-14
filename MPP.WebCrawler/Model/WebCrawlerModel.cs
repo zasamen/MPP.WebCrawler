@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using CrawlingLib;
 using MPP.WebCrawler.ViewModel;
 
@@ -40,7 +41,7 @@ namespace MPP.WebCrawler.Model
             {
                 return counter;
             }
-            private set
+            set
             {
                 counter = value;
                 OnPropertyChanged("Counter");
@@ -53,7 +54,7 @@ namespace MPP.WebCrawler.Model
             {
                 return isExecuting;
             }
-            private set
+            set
             {
                 isExecuting = value;
             }
@@ -62,18 +63,17 @@ namespace MPP.WebCrawler.Model
 
         internal WebCrawlerModel()
         {
-            reader = new ConfigurationReader("config.config"); 
-            crawler = new WebCrawlingPerformer(reader.NestingDepth);
+            try
+            {
+                reader = new ConfigurationReader("config.config");
+                crawler = new WebCrawlingPerformer(reader.NestingDepth);
+            }
+            catch (ConfigurationReadingException cre)
+            {
+                MessageBox.Show(cre.Message + "\r\nApplication shutdowns");
+                Application.Current.Shutdown();        
+            }
         }
-
-        internal async void DoCrawling(object o)
-        {
-            isExecuting = true;
-            Counter = 0;
-            await CrawlAndWriteResultAsync();
-            isExecuting = false;
-        }
-
 
         internal async Task CrawlAndWriteResultAsync()
         {
@@ -86,16 +86,6 @@ namespace MPP.WebCrawler.Model
                 await crawler.PerformCrawlingAsync(reader.UrlsToCrawl));
         }
 
-        internal bool CanCrawling(object o)
-        {
-            return !isExecuting;
-        }
-        
-
-        internal void IncrementCounterForCheckingUIAsync(object o)
-        {
-            Counter++;
-        }
 
     }
 }

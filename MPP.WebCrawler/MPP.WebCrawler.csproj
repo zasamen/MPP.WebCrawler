@@ -68,6 +68,7 @@
     <Compile Include="Model\ConfigurationReadingException.cs" />
     <Compile Include="Model\ObservableResult.cs" />
     <Compile Include="Model\WebCrawlerModel.cs" />
+    <Compile Include="ViewModel\CommandsImplementation.cs" />
     <Compile Include="ViewModel\NotifyPropertyChanged.cs" />
     <Compile Include="ViewModel\RelayCommand.cs" />
     <Compile Include="ViewModel\WebCrawlerViewModel.cs" />

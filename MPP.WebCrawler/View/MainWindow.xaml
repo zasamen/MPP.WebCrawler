@@ -11,12 +11,20 @@
     <Grid>
         <DockPanel LastChildFill="true">
             <StackPanel DockPanel.Dock="Bottom" Margin="5 10 5 10">
-                <Button Margin="10 0 10 10" Command="{Binding DoCommand}"  HorizontalAlignment="Center">
+                <Button Margin="10 0 10 10" HorizontalAlignment="Center" 
+                        Command="{Binding CrawlCommand}" 
+                  CommandParameter="{Binding CurrentModel}">
                     Run Crawling
                 </Button>
-              <Button Margin="10 10 10 0" Command="{Binding AddCommand}" Content="{Binding Path=CurrentModel.Counter}" HorizontalAlignment="Center" MinHeight="20" MinWidth="20"/>
+              <Button Margin="10 10 10 0" HorizontalAlignment="Center" 
+                      MinHeight="20" MinWidth="20" 
+            Content="{Binding Path=CurrentModel.Counter}" 
+            Command="{Binding IncrementCommand}" 
+            CommandParameter="{Binding CurrentModel}"/>
             </StackPanel>
-        <TreeView x:Name="TV1" DockPanel.Dock="Top" VerticalAlignment="Stretch" Margin="5 10 5 0" ItemsSource="{Binding Path=CurrentModel.MainResult.Items}" MinHeight="40">
+        <TreeView x:Name="TV1" DockPanel.Dock="Top" VerticalAlignment="Stretch" 
+                  Margin="5 10 5 0" MinHeight="40" 
+          ItemsSource="{Binding Path=CurrentModel.MainResult.Items}" >
                 <TreeView.Resources>
                     <HierarchicalDataTemplate DataType="{x:Type Model:ObservableResult}"
                                               ItemsSource="{Binding Items }">

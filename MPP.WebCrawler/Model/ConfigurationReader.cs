@@ -20,7 +20,7 @@ namespace MPP.WebCrawler.Model
 
         private string[] ValidateRoots(IEnumerable<string> roots)
         {
-            return roots.Where(x => (string.IsNullOrWhiteSpace(x) 
+            return roots.Where(x => !(string.IsNullOrWhiteSpace(x) 
             || string.IsNullOrEmpty(x))).ToArray();         
         }
 
