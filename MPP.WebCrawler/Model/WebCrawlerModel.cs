@@ -12,7 +12,31 @@ namespace MPP.WebCrawler.Model
     internal class WebCrawlerModel : NotifyPropertyChanged
     {
         private int counter = 0;
-        public int Counter { get
+
+        private bool isExecuting = false;
+
+        private ObservableResult mainResult;
+
+        private WebCrawlingPerformer crawler;
+
+        private ConfigurationReader reader;
+
+        public ObservableResult MainResult
+        {
+            get
+            {
+                return mainResult;
+            }
+            set
+            {
+                mainResult = value;
+                OnPropertyChanged("MainResult");
+            }
+        }
+
+        public int Counter
+        {
+            get
             {
                 return counter;
             }
@@ -21,9 +45,8 @@ namespace MPP.WebCrawler.Model
                 counter = value;
                 OnPropertyChanged("Counter");
             }
-            }
+        }
 
-        private bool isExecuting = false;
         public bool IsExecuting
         {
             get
@@ -36,19 +59,32 @@ namespace MPP.WebCrawler.Model
             }
         }
 
+
+        internal WebCrawlerModel()
+        {
+            reader = new ConfigurationReader("config.config"); 
+            crawler = new WebCrawlingPerformer(reader.NestingDepth);
+        }
+
         internal async void DoCrawling(object o)
         {
             isExecuting = true;
             Counter = 0;
-            CrawlingResult cr = await DoImportantThingAsync();
+            await CrawlAndWriteResultAsync();
             isExecuting = false;
         }
-        internal async Task<CrawlingResult> DoImportantThingAsync()
-        {
 
-            return await new WebCrawlingPerformer(1).PerformCrawlingAsync(new string[]{ "http://motherfuckingwebsite.com/"});
+
+        internal async Task CrawlAndWriteResultAsync()
+        {
+            MainResult = await CrawlAndAdaptResultAsync();
         }
 
+        internal async Task<ObservableResult> CrawlAndAdaptResultAsync()
+        {
+            return ObservableResult.CreateFromCrawlingResult(
+                await crawler.PerformCrawlingAsync(reader.UrlsToCrawl));
+        }
 
         internal bool CanCrawling(object o)
         {
@@ -56,7 +92,7 @@ namespace MPP.WebCrawler.Model
         }
         
 
-        internal void DoNothing(object o)
+        internal void IncrementCounterForCheckingUIAsync(object o)
         {
             Counter++;
         }

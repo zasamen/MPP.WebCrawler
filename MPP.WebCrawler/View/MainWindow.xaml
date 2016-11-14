@@ -11,14 +11,14 @@
     <Grid>
         <DockPanel LastChildFill="true">
             <StackPanel DockPanel.Dock="Bottom" Margin="5 10 5 10">
-                <Button Margin="10 0 10 10" Command="{Binding DoCommand}" HorizontalAlignment="Center">
-                    SPECIAL BUTTON
+                <Button Margin="10 0 10 10" Command="{Binding DoCommand}"  HorizontalAlignment="Center">
+                    Run Crawling
                 </Button>
               <Button Margin="10 10 10 0" Command="{Binding AddCommand}" Content="{Binding Path=CurrentModel.Counter}" HorizontalAlignment="Center" MinHeight="20" MinWidth="20"/>
             </StackPanel>
-        <TreeView x:Name="TV1" DockPanel.Dock="Top" VerticalAlignment="Stretch" Margin="5 10 5 0" ItemsSource="{Binding roots}" MinHeight="40">
+        <TreeView x:Name="TV1" DockPanel.Dock="Top" VerticalAlignment="Stretch" Margin="5 10 5 0" ItemsSource="{Binding Path=CurrentModel.MainResult.Items}" MinHeight="40">
                 <TreeView.Resources>
-                    <HierarchicalDataTemplate DataType="{x:Type Model:CustomItem}"
+                    <HierarchicalDataTemplate DataType="{x:Type Model:ObservableResult}"
                                               ItemsSource="{Binding Items }">
                         <TextBlock Text="{Binding Title}"/>
                     </HierarchicalDataTemplate>

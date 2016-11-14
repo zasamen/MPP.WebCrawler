@@ -12,6 +12,8 @@ namespace MPP.WebCrawler.ViewModel
         private Action<object> execute;
         private Func<object, bool> canExecute;
 
+        //public event EventHandler CanExecuteChanged;
+
         public event EventHandler CanExecuteChanged
         {
             add { CommandManager.RequerySuggested += value; }

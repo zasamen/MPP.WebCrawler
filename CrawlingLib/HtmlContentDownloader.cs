@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -16,9 +17,9 @@ namespace CrawlingLib
             client = new HttpClient();
         }
 
-        internal Task<string> DownloadContentAsync(string url)
+        internal async Task<string> DownloadContentAsync(string url)
         {
-            return client.GetStringAsync(url);
+            return await client.GetStringAsync(url);
         }
 
     }

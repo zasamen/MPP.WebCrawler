@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,10 +21,21 @@ namespace CrawlingLib
         }
 
 
-        internal async Task<IEnumerable<IElement>> ExtractLinks(string url)
+        internal async Task<IEnumerable<string>> ExtractLinks(string url)
         {
-            return (await parser.ParseAsync(
-                await downloader.DownloadContentAsync(url))).Links;
+            return ConvertIElementsToStrings(
+                (await parser.ParseAsync(
+                    await downloader.DownloadContentAsync(url))).Links);
+        }
+
+        private LinkedList<string> ConvertIElementsToStrings(IEnumerable<IElement> elements)
+        {
+            LinkedList<string> stringList = new LinkedList<string>();
+            foreach (var element in elements)
+            {
+                stringList.AddLast(element.GetAttribute("href"));
+            }
+            return stringList;
         }
     }
 }

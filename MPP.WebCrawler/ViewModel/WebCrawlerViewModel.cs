@@ -6,12 +6,12 @@ using MPP.WebCrawler.Model;
 
 namespace MPP.WebCrawler.ViewModel
 {
-    class WebCrawlerViewModel : INotifyPropertyChanged
+    class WebCrawlerViewModel : NotifyPropertyChanged
     {
 
         public WebCrawlerModel CurrentModel { get; set; }
 
-        public ObservableCollection<CustomItem> roots { get; set; }
+        public ObservableCollection<ObservableResult> roots { get; set; }
 
         private RelayCommand addCommand;
 
@@ -44,31 +44,9 @@ namespace MPP.WebCrawler.ViewModel
         public WebCrawlerViewModel()
         {
             CurrentModel = new WebCrawlerModel();
-            addCommand = new RelayCommand(CurrentModel.DoNothing);
+            addCommand = new RelayCommand(CurrentModel.IncrementCounterForCheckingUIAsync);
             doCommand = new RelayCommand(CurrentModel.DoCrawling,CurrentModel.CanCrawling);
-            roots = new ObservableCollection<CustomItem> {
-                new CustomItem {Title="root1" },
-                new CustomItem {Title="root2" },
-                new CustomItem {Title="root3" }
-            };
-            int i = 0;
-            foreach (var root in roots)
-            {
-                CustomItem item = new CustomItem { Title = "subroot" + i++ };
-                root.Items.Add(item);
-                for (int j = 0; j <= i; j++)
-                {
-                    item.Items.Add(new CustomItem { Title = "leaf" + j });
-                }
-            }
         }
         
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void OnPropertyChanged([CallerMemberName]string prop = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
-        }
     }
 }

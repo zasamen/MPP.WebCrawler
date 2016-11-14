@@ -27,49 +27,37 @@ namespace CrawlingLib
 
         public Task<CrawlingResult> PerformCrawlingAsync(string[] roots)
         {
-            return CrawlingResultFactoryForExtractedLinksAsync(roots, 
-                nestingNumber + 1);
+            return Task.Run(() => CrawlRoot(roots, nestingNumber));
         }
 
         private async Task<CrawlingResult> CrawlingResultFactoryAsync(
             string link, int level)
         {
-            return new CrawlingResult(link, level == 0
+            return new CrawlingResult(link, level == -1
                 ? null
                 : await Task.WhenAll(CrawlLinksAsync(
                     await extractor.ExtractLinks(link), level - 1)));
         }
 
         private Task<CrawlingResult>[] CrawlLinksAsync(
-            IEnumerable<IElement> links, int level)
+            IEnumerable<string> links, int level)
         {
             List<Task<CrawlingResult>> TaskList = new List<Task<CrawlingResult>>();
             foreach (var embeddedLink in links)
             {
-                TaskList.Add(CrawlingResultFactoryAsync(
-                    embeddedLink.NodeValue, level));
+                Task<CrawlingResult> t = CrawlingResultFactoryAsync(
+                    embeddedLink, level);
+                t.Start();
+                TaskList.Add(t);
             }
             return TaskList.ToArray();
         }
 
-        private async Task<CrawlingResult> 
-            CrawlingResultFactoryForExtractedLinksAsync(string[] links, int level)
+        private async Task<CrawlingResult>
+            CrawlRoot(string[] links, int level)
         {
-            return new CrawlingResult(string.Empty, await Task.WhenAll(CrawlLinksAsync(
+            return new CrawlingResult("root", await Task.WhenAll(CrawlLinksAsync(
                     links, level - 1)));
         }
-
-        private Task<CrawlingResult>[] CrawlLinksAsync(string[] links, int level)
-        {
-            List<Task<CrawlingResult>> TaskList = new List<Task<CrawlingResult>>();
-            foreach (var embeddedLink in links)
-            {
-                TaskList.Add(CrawlingResultFactoryAsync(
-                    embeddedLink, level));
-            }
-            return TaskList.ToArray();
-        }
-
-
     }
 }
