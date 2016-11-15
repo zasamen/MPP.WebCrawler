@@ -30,7 +30,7 @@ namespace CrawlingLib
             return Task.Run(() => CrawlRootAsync(roots, nestingNumber));
         }
 
-        private async Task<CrawlingResult> CrawlLink(
+        private async Task<CrawlingResult> CrawlLinkAsync(
             string link, int level)
         {
             return new CrawlingResult(link, level == -1
@@ -45,9 +45,7 @@ namespace CrawlingLib
             List<Task<CrawlingResult>> TaskList = new List<Task<CrawlingResult>>();
             foreach (var embeddedLink in links)
             {
-                Task<CrawlingResult> t = CrawlLink(
-                    embeddedLink, level);
-                TaskList.Add(t);
+                TaskList.Add(CrawlLinkAsync(embeddedLink, level));
             }
             return TaskList.ToArray();
         }

@@ -45,7 +45,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CrawlingResult.cs" />
-    <Compile Include="HtmlContentDownloader.cs" />
     <Compile Include="UrlLinkExtractor.cs" />
     <Compile Include="IWebCrawler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
