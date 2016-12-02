@@ -13,41 +13,38 @@ namespace CrawlingLib
 {
     internal class UrlLinkExtractor
     {
-        HtmlParser parser;
+        private static readonly string LinkAttribute = "href";
 
-        internal UrlLinkExtractor()
+        private List<string> ConvertToStringList(IEnumerable<IElement> elements)
         {
-            parser = new HtmlParser();
+            var V = elements.ToList().ConvertAll<string>(x => x.GetAttribute(LinkAttribute));
+            return V;
         }
 
-
-        internal async Task<IEnumerable<string>> ExtractLinks(string url)
+        private async Task<IEnumerable<IElement>> GetLinksAsync(Url url)
         {
-            return (IsValidUrl(url))
-                ? ConvertToStringList(await GetLinksAsync(url))
+            return (await new HtmlParser().ParseAsync(await GetContentAsync(url))).Links;
+        }
+
+        private async Task<string> GetContentAsync(Url url)
+        {
+                return await new WebClient().DownloadStringTaskAsync(url);
+        }
+
+        private Url GetUrlIfValid(Url url)
+        {
+            return (url.IsInvalid
+                || !url.Scheme.StartsWith("http"))
+                ? null
+                : url;
+        }
+        
+        internal async Task<List<string>> ExtractLinks(string url)
+        {
+            var validUrl = GetUrlIfValid(new Url(url));
+            return (validUrl != null)
+                ? ConvertToStringList(await GetLinksAsync(validUrl))
                 : new List<string>();
         }
-
-        private IEnumerable<string> ConvertToStringList(IEnumerable<IElement> elements)
-        {
-            return elements.ToList().ConvertAll<string>(x => x.GetAttribute("href"));
-        }
-
-        private async Task<IEnumerable<IElement>> GetLinksAsync(string url)
-        {
-            return (await parser.ParseAsync(await GetContentAsync(url))).Links;
-        }
-
-        private async Task<string> GetContentAsync(string url)
-        {
-            return await new WebClient().DownloadStringTaskAsync(url);
-        }
-
-        private bool IsValidUrl(string url)
-        {
-            return (!new Url(url).IsInvalid && url.StartsWith("http") && !url.StartsWith("/"));
-        }
-
-        
     }
 }

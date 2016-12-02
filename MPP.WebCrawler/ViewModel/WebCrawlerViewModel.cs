@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -39,11 +40,19 @@ namespace MPP.WebCrawler.ViewModel
             }
         }
 
+        private void HandleCriticalException(object obj, ConfigurationReadingException e)
+        {
+            MessageBox.Show(e.Message 
+                + "\r\nApplication shutdowns");
+            Application.Current.Shutdown();
+        }
+
         public WebCrawlerViewModel()
         {
             CurrentModel = new WebCrawlerModel();
+            CurrentModel.ExceptionOccurance += HandleCriticalException;
             incrementCommand = new RelayCommand(CommandsImplementation.IncrementCounterForCheckingUI);
-            crawlCommand = new RelayCommand(CommandsImplementation.Crawl,CommandsImplementation.CanCrawling);
+            crawlCommand = new RelayCommand(CommandsImplementation.Crawl, CommandsImplementation.CanCrawling);
         }
         
     }

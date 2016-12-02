@@ -22,6 +22,13 @@ namespace MPP.WebCrawler.Model
 
         private ConfigurationReader reader;
 
+        internal event EventHandler<ConfigurationReadingException> ExceptionOccurance;
+
+        internal void OnException(ConfigurationReadingException e)
+        {
+            ExceptionOccurance(this, e);
+        }
+
         public ObservableResult MainResult
         {
             get
@@ -61,23 +68,18 @@ namespace MPP.WebCrawler.Model
         }
 
 
-        internal WebCrawlerModel()
+        internal async Task CrawlAndWriteResultAsync()
         {
             try
             {
                 reader = new ConfigurationReader("config.config");
-                crawler = new WebCrawlingPerformer(reader.NestingDepth);
+                crawler = new WebCrawlingPerformer(reader.NestingDepth, reader.LogPath);
+                MainResult = await CrawlAndAdaptResultAsync();
             }
             catch (ConfigurationReadingException cre)
             {
-                MessageBox.Show(cre.Message + "\r\nApplication shutdowns");
-                Application.Current.Shutdown();        
+                OnException(cre);
             }
-        }
-
-        internal async Task CrawlAndWriteResultAsync()
-        {
-            MainResult = await CrawlAndAdaptResultAsync();
         }
 
         internal async Task<ObservableResult> CrawlAndAdaptResultAsync()

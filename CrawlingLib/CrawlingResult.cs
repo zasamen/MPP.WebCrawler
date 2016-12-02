@@ -11,9 +11,9 @@ namespace CrawlingLib
     {
         public string RootURL { get; set; }
 
-        private readonly LinkedList<CrawlingResult> children;
+        private readonly List<CrawlingResult> children;
 
-        public LinkedList<CrawlingResult> Children
+        public List<CrawlingResult> Children
         {
             get
             {
@@ -29,8 +29,8 @@ namespace CrawlingLib
         public CrawlingResult(string URL, IEnumerable<CrawlingResult> subResults)
         {
             children = subResults != null
-                ? new LinkedList<CrawlingResult>(subResults)
-                : new LinkedList<CrawlingResult>();
+                ? new List<CrawlingResult>(subResults)
+                : new List<CrawlingResult>();
             this.RootURL = URL != null ? URL : string.Empty;
         }
 

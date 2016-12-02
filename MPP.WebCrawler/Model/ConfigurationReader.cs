@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ namespace MPP.WebCrawler.Model
     {
         private string[] urlsToCrawl;
         private string filename;
+        private string logPath;
 
         private int ValidateNestingDepth(string depth)
         {
@@ -22,6 +24,11 @@ namespace MPP.WebCrawler.Model
         {
             return roots.Where(x => !(string.IsNullOrWhiteSpace(x) 
             || string.IsNullOrEmpty(x))).ToArray();         
+        }
+
+        private string ValidateLogPath(string logPath)
+        {
+            return Directory.Exists(logPath) ? logPath : "./";
         }
 
         private bool isLoaded = false;
@@ -41,6 +48,7 @@ namespace MPP.WebCrawler.Model
             try
             {
                 var root = XDocument.Load(filename).Root;
+                LogPath = ValidateLogPath(root.Element("logPath").Value);
                 NestingDepth = ValidateNestingDepth(root.Element("depth").Value);
                 urlsToCrawl = ValidateRoots(root.
                     Element("rootResources").
@@ -86,6 +94,20 @@ namespace MPP.WebCrawler.Model
                 filename = value;
             }
         }
+
+        internal string LogPath
+        {
+            get
+            {
+                LoadIfNotLoaded();
+                return logPath;
+            }
+            set
+            {
+                logPath= value;
+            }
+        }
+
 
         internal ConfigurationReader(string filename)
         {
